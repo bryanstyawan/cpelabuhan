@@ -1,0 +1,469 @@
+<?php
+
+	function menu_header()
+	{
+		$CI        = & get_instance();
+		$id        = $CI->session->userdata('_session_user');
+		$role      = $CI->session->userdata('_session_role');
+		$info_user = $CI->Globalrules->get_info_user();
+		$induk     = $CI->db->query(" SELECT config_menu.*,
+												config_menu_akses.id_akses
+										FROM config_menu
+										INNER JOIN config_menu_akses
+										ON    config_menu.id_menu = config_menu_akses.id_menu
+										WHERE id_parent           = 0
+										AND   flag                = 1
+										AND   id_role             = '".$role."'
+										AND   baca                = 1
+										ORDER BY prioritas asc"
+									);
+		$notify       = $CI->db->query("SELECT a.*
+										FROM log_notifikasi a
+										WHERE a.receiver    = '".$id."'
+										AND   a.status_read = 0
+										ORDER BY a.id DESC"
+									);
+		$count_notify = count($notify->result());
+		$CI->load->view('templates/header/head');
+		$CI->load->view('templates/header/navigation');				
+
+		foreach($induk->result() as $row)
+		{
+			$y = $CI->db->query("SELECT 
+										COUNT(config_menu_akses.id_menu) as jml
+								FROM config_menu
+								INNER JOIN config_menu_akses
+								WHERE id_parent = '".$row->id_menu."'
+								AND flag=1
+								AND id_role = '".$role."'
+								AND baca=1"
+								)->row();
+			$x = $y->jml;
+			if ($x !=0)
+			{
+				$CI->load->view('templates/header/parent',array('icon'=>$row->icon,'name'=>$row->nama_menu));								
+
+				$anak = $CI->db->query(" SELECT config_menu.*,
+												config_menu_akses.id_akses
+										FROM config_menu
+										INNER JOIN config_menu_akses
+										ON config_menu.id_menu=config_menu_akses.id_menu
+										WHERE id_parent=$row->id_menu
+										AND flag=1
+										AND id_role=$role
+										AND baca=1
+										ORDER BY prioritas ASC, nama_menu ASC"
+									);
+				foreach($anak->result() as $baris)
+				{
+					$style_ul = "";
+					$change_name = $baris->nama_menu;
+					if (count($anak->result()) > 7) {
+						# code...
+						$CI->load->view('templates/header/child',array('icon'=>$row->icon,'name'=>$change_name,'url_pages'=>$baris->url_pages,'layout'=>'col-lg-6'));
+					}
+					else
+					{
+						$CI->load->view('templates/header/child',array('icon'=>$row->icon,'name'=>$change_name,'url_pages'=>$baris->url_pages,'layout'=>'col-lg-10'));
+					}
+
+				}
+				$CI->load->view('templates/header/close_tag',array('tag'=>'ul'));
+				$CI->load->view('templates/header/close_tag',array('tag'=>'li'));								
+			}
+			else
+			{
+				$CI->load->view('templates/header/parent1',array('icon'=>$row->icon,'name'=>$row->nama_menu,'url_pages'=>$row->url_pages));												
+			}
+		}
+		$CI->load->view('templates/header/close_tag',array('tag'=>'ul'));
+		$CI->load->view('templates/header/close_tag',array('tag'=>'div'));
+		$CI->load->view('templates/header/open_tag',array('tag'=>'div','class'=>'navbar-custom-menu'));
+		$CI->load->view('templates/header/open_tag',array('tag'=>'ul','class'=>'nav navbar-nav pull-right'));
+		// $CI->load->view('templates/header/message');
+		$CI->load->view('templates/header/menu_user');		
+		// $CI->load->view('templates/header/notification',array('counter'=>$count_notify,'notify_result'=>$notify->result()));												
+		$CI->load->view('templates/header/user',array('info_user'=>$info_user));				
+		$CI->load->view('templates/header/close_tag',array('tag'=>'ul'));		
+		$CI->load->view('templates/header/close_tag',array('tag'=>'div'));				
+		$CI->load->view('templates/header/close_tag',array('tag'=>'nav'));				
+	}
+
+
+		function menuSamping(){
+			$CI =& get_instance();
+			$role = $CI->session->userdata('_session_role');
+			$induk = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=0 AND flag=1 AND id_role=$role AND baca=1");
+			foreach($induk->result() as $row){
+	
+				$y = $CI->db->query(" SELECT COUNT(config_menu_akses.id_menu) as jml FROM config_menu INNER JOIN config_menu_akses WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1")->row();
+				$x = $y->jml;
+				if ($x !=0){?>
+					<li class="treeview"><?php echo anchor("#","<i class='".$row->icon."'></i><span>". $row->nama_menu."</span><i class='fa fa-angle-left pull-right'></i>");?>
+					<ul class="treeview-menu">
+				<?php $anak = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1");
+					foreach($anak->result() as $baris){?>
+						<li><?php echo anchor($baris->url_pages,"<i class='".$baris->icon."'></i><span>".$baris->nama_menu."</span>");?></li>
+					<?php
+					}
+					echo "</ul></li>";
+				}else{?>
+					<li><?php echo anchor($row->url_pages,"<i class='".$row->icon."'></i><span>".$row->nama_menu."</span>");?></li>
+				<?php
+				}
+			}
+	
+		}		
+
+
+		function load_paket_rangking($tipe)
+		{
+			# code...
+			$CI =& get_instance();
+			if ($tipe != array()) {
+				# code...
+				for ($i=0; $i < count($tipe); $i++) { 
+					# code...
+					if ($tipe[$i]['id'] != 3) {
+						# code...
+		?>
+						<div class="col-xs-5">
+							<div class="box">
+								<div class="box-header">
+									<h3 class="box-title">Paket Try Out <?=$tipe[$i]['name'];?></h3>
+								</div><!-- /.box-header -->
+								<div class="box-body" id="table_fill">
+									<div class="box-body">                        
+		<?php
+										$get_paket_rangking = $CI->Allcrud->getData('tr_analisis_rangking',array('id_user'=>$CI->session->userdata('_session_user')),array('id_paket','ASC'))->result_array();
+										$flag_isempty = 0;
+										if ($get_paket_rangking != array()) {
+											# code...
+											for ($ii=0; $ii < count($get_paket_rangking); $ii++) { 
+												# code...
+												if ($get_paket_rangking[$ii]['id_parent'] == $tipe[$i]['id']) {
+													# code...
+													$get_paket_try_out = $CI->Allcrud->getData('mr_try_out_list',array('id_parent'=>$get_paket_rangking[$ii]['id_parent'],'id'=>$get_paket_rangking[$ii]['id_paket']))->result_array();													
+													if ($get_paket_try_out != array()) {
+														# code...
+														// print_r(count());														
+		?>
+														<div class="col-lg-12 div_row_header">
+															<!-- <div class="col-lg-1"><?=$ii+1;?></div> -->
+															<div class="col-lg-12 text-center" style="border-right: none;"><a class="btn btn-primary" href="<?=base_url();?>user/try_out/rangking/<?=$get_paket_rangking[$ii]['id_parent'];?>/<?=$get_paket_rangking[$ii]['id_paket'];?>"><?=$get_paket_try_out[0]['name'];?></a></div>                                                                                                                                    
+														</div>														
+		<?php
+													}
+												}
+												else {
+													# code...
+													$flag_isempty = 1;
+												}
+											}
+
+											if ($flag_isempty == 1) {
+												# code...
+		?>
+												<div class="col-lg-12 div_row_header">
+													<!-- <div class="col-lg-1"><?=$ii+1;?></div> -->
+													<div class="col-lg-12 text-center" style="border-right: none;">Data tidak ditemukan</div>                                                                                                                                    
+												</div>		
+		<?php
+											}
+										}
+		?>
+									</div>
+								</div>
+							</div>
+						</div>
+		<?php
+					}
+				}
+			}    
+		}
+
+		function load_paket_analisis($tipe)
+		{
+			# code...
+			$CI =& get_instance();
+			if ($tipe != array()) {
+				# code...
+				for ($i=0; $i < count($tipe); $i++) { 
+					# code...
+					if ($tipe[$i]['id'] != 3) {
+						# code...
+		?>
+						<div class="col-xs-5">
+							<div class="box">
+								<div class="box-header">
+									<h3 class="box-title">Paket Try Out <?=$tipe[$i]['name'];?></h3>
+								</div><!-- /.box-header -->
+								<div class="box-body" id="table_fill">
+									<div class="box-body">                        
+		<?php
+										$get_paket_rangking = $CI->Allcrud->getData('tr_analisis_rangking',array('id_user'=>$CI->session->userdata('_session_user')),array('id_paket','ASC'))->result_array();
+										$flag_isempty = 0;
+										if ($get_paket_rangking != array()) {
+											# code...
+											for ($ii=0; $ii < count($get_paket_rangking); $ii++) { 
+												# code...
+												if ($get_paket_rangking[$ii]['id_parent'] == $tipe[$i]['id']) {
+													# code...
+													$get_paket_try_out = $CI->Allcrud->getData('mr_try_out_list',array('id_parent'=>$get_paket_rangking[$ii]['id_parent'],'id'=>$get_paket_rangking[$ii]['id_paket']))->result_array();													
+													if ($get_paket_try_out != array()) {
+														# code...
+														// print_r(count());														
+		?>
+														<div class="col-lg-12 div_row_header">
+															<!-- <div class="col-lg-1"><?=$ii+1;?></div> -->
+															<div class="col-lg-12 text-center" style="border-right: none;"><a class="btn btn-primary" href="<?=base_url();?>user/try_out/rangking/<?=$get_paket_rangking[$ii]['id_parent'];?>/<?=$get_paket_rangking[$ii]['id_paket'];?>"><?=$get_paket_try_out[0]['name'];?></a></div>                                                                                                                                    
+														</div>														
+		<?php
+													}
+												}
+												else {
+													# code...
+													$flag_isempty = 1;
+												}
+											}
+
+											if ($flag_isempty == 1) {
+												# code...
+		?>
+												<div class="col-lg-12 div_row_header">
+													<!-- <div class="col-lg-1"><?=$ii+1;?></div> -->
+													<div class="col-lg-12 text-center" style="border-right: none;">Data tidak ditemukan</div>                                                                                                                                    
+												</div>		
+		<?php
+											}
+										}
+		?>
+									</div>
+								</div>
+							</div>
+						</div>
+		<?php
+					}
+				}
+			}    
+		}		
+
+
+
+
+
+
+
+
+
+		
+/***********************************************************************************************************/
+		function status_pekerjaan($posisi,$status)
+		{
+			# code...
+			$CI     =& get_instance();
+			$get_count_transact = $CI->db->query("SELECT count(a.id_pekerjaan) as jumlah
+												FROM tr_capaian_pekerjaan a
+												JOIN mr_pegawai b
+												ON a.id_pegawai = b.id
+												JOIN mr_posisi c
+												ON b.posisi = c.id
+												JOIN mr_uraian_tugas d
+												ON a.id_uraian_tugas = d.id_urtug
+												WHERE a.tanggal_mulai LIKE '%".date('Y-m')."%'
+												AND a.tanggal_selesai LIKE '%".date('Y-m')."%'
+												AND c.atasan = '".$posisi."'
+												AND a.status_pekerjaan = '".$status."'");
+			return $get_count_transact->result()[0]->jumlah;
+		}
+
+		function status_pekerjaan_banding($id,$status)
+		{
+			# code...
+			$CI     =& get_instance();
+			$get_count_transact = $CI->db->query("SELECT count(a.id_pekerjaan) as jumlah
+				FROM tr_capaian_pekerjaan a
+				JOIN mr_uraian_tugas b ON a.id_uraian_tugas = b.id_urtug
+				JOIN mr_pegawai c ON a.id_pegawai = c.id
+				WHERE a.tanggal_mulai LIKE '%".date('Y-m')."%'
+				AND a.tanggal_selesai LIKE '%".date('Y-m')."%'
+				AND a.id_pegawai_es2_banding = '".$id."'
+				AND a.status_pekerjaan = '".$status."'");
+			return $get_count_transact->result()[0]->jumlah;
+		}
+
+		function menuSampingBACKUP(){
+			$CI =& get_instance();
+			$role = $CI->session->userdata('sesRole');
+			$induk = $CI->db->query(" SELECT * FROM config_menu WHERE id_parent=0 ");
+			foreach($induk->result() as $row){
+
+				$y = $CI->db->query(" SELECT COUNT(id_menu) as jml FROM config_menu WHERE id_parent=$row->id_menu ")->row();
+				$x = $y->jml;
+				if ($x !=0){?>
+					<li class="treeview"><?php echo anchor("#","<i class='".$row->icon."'></i><span>". $row->nama_menu."</span><i class='fa fa-angle-left pull-right'></i>");?>
+					<ul class="treeview-menu">
+				<?php $anak = $CI->db->query(" SELECT * FROM config_menu WHERE id_parent=$row->id_menu ");
+					foreach($anak->result() as $baris){?>
+						<li><?php echo anchor($baris->url_pages,"<i class='".$baris->icon."'></i><span>".$baris->nama_menu."</span>");?></li>
+					<?php
+					}
+					echo "</ul></li>";
+				}else{?>
+					<li><?php echo anchor($row->url_pages,"<i class='".$row->icon."'></i><span>".$row->nama_menu."</span>");?></li>
+				<?php
+				}
+			}
+
+		}
+
+		function treeview($role){
+			$CI =& get_instance();
+			$induk = $CI->db->query("SELECT config_menu.*,
+											config_menu_akses.id_akses,
+											config_menu_akses.buat,
+											config_menu_akses.baca,
+											config_menu_akses.ubah,
+											config_menu_akses.hapus											
+									FROM config_menu
+									INNER JOIN config_menu_akses
+									ON config_menu.id_menu=config_menu_akses.id_menu
+									WHERE id_role=$role
+									AND config_menu.flag <> 0
+									AND id_parent=0
+									AND flag=1");
+			foreach($induk->result() as $row){?>
+				<tr style="background: #f39c12;color: #fff;">
+					<td><?php echo "<i class='".$row->icon."'></i> ".$row->nama_menu; ?></td>
+					<td><?php if ($row->buat == 0){echo "<input id=cr".$row->id_akses." name='name_cr' class='minimal name_cr' type='checkbox' value=".$row->buat." onclick='create(".$row->id_akses.")'>";}else{echo "<input id=cr".$row->id_akses." class='minimal' type='checkbox' value=".$row->buat." onclick='create(".$row->id_akses.")' checked >";} ?></td>
+					<td><?php if ($row->baca == 0){echo "<input id=re".$row->id_akses." name='name_re' class='minimal name_re' type='checkbox' value=".$row->baca." onclick='read(".$row->id_akses.")'>";}else{echo "<input id=re".$row->id_akses." class='minimal' type='checkbox' value=".$row->baca." onclick='read(".$row->id_akses.")' checked >";} ?></td>
+					<td><?php if ($row->ubah == 0){echo "<input id=up".$row->id_akses." name='name_up' class='minimal name_up' type='checkbox' value=".$row->ubah." onclick='update(".$row->id_akses.")'>";}else{echo "<input id=up".$row->id_akses." class='minimal' type='checkbox' value=".$row->ubah." onclick='update(".$row->id_akses.")' checked >";} ?></td>
+					<td><?php if ($row->hapus == 0){echo "<input id=de".$row->id_akses." name='name_de' class='minimal name_de' type='checkbox' value=".$row->hapus." onclick='delet(".$row->id_akses.")'>";}else{echo "<input id=de".$row->id_akses." class='minimal' type='checkbox' value=".$row->hapus." onclick='delet(".$row->id_akses.")' checked >";} ?></td>
+				</tr>
+
+			<?php $anak = $CI->db->query(" SELECT config_menu.*,
+													config_menu_akses.id_akses,
+													config_menu_akses.buat,
+													config_menu_akses.baca,
+													config_menu_akses.ubah,
+													config_menu_akses.hapus
+											FROM config_menu
+											INNER JOIN config_menu_akses
+											ON config_menu.id_menu=config_menu_akses.id_menu
+											WHERE id_role=$role
+											AND config_menu.flag <> 0											
+											AND id_parent=$row->id_menu");
+				foreach ($anak->result() as $baris){?>
+					<tr>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo "<i class='".$baris->icon."'></i> ". $baris->nama_menu;?></td>
+					<td><?php if ($baris->buat == 0){echo "<input id=cr".$baris->id_akses." class='minimal name_cr' type='checkbox' value=".$baris->buat." onclick='create(".$baris->id_akses.")'>";}else{echo "<input id=cr".$baris->id_akses." class='minimal' type='checkbox' value=".$baris->buat." onclick='create(".$baris->id_akses.")' checked >";} ?></td>					
+					<td><?php if ($baris->baca == 0){echo "<input id=re".$baris->id_akses." class='minimal name_re' type='checkbox' value=".$baris->baca." onclick='read(".$baris->id_akses.")'>";}else{echo "<input id=re".$baris->id_akses." class='minimal' type='checkbox' value=".$baris->baca." onclick='read(".$baris->id_akses.")' checked >";} ?></td>
+					<td><?php if ($baris->ubah == 0){echo "<input id=up".$baris->id_akses." class='minimal name_up' type='checkbox' value=".$baris->ubah." onclick='update(".$baris->id_akses.")'>";}else{echo "<input id=up".$baris->id_akses." class='minimal' type='checkbox' value=".$baris->ubah." onclick='update(".$baris->id_akses.")' checked >";} ?></td>
+					<td><?php if ($baris->hapus == 0){echo "<input id=de".$baris->id_akses." class='minimal name_de' type='checkbox' value=".$baris->hapus." onclick='delet(".$baris->id_akses.")'>";}else{echo "<input id=de".$baris->id_akses." class='minimal' type='checkbox' value=".$baris->hapus." onclick='delet(".$baris->id_akses.")' checked >";} ?></td>
+				</tr>
+				<?php }
+			}
+
+
+	}
+
+	function selisihMenit($awal,$akhir){
+		$t_awal 	= explode(":",$awal);
+		$t_akhir 	= explode(":",$akhir);
+		$difJam 	= $t_akhir[0] - $t_awal[0];
+		$difMenit	= $t_akhir[1] - $t_awal[1];
+		$total		= ($difJam * 60) + $difMenit;
+		return $total;
+	}
+
+	function random($panjang)
+	{
+		$pengacak = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+		$string = '';
+		for($i = 0; $i < $panjang; $i++) {
+			$pos = rand(0, strlen($pengacak)-1);
+			$string .= $pengacak{$pos};
+		}
+		return $string;
+	}
+
+	function lama_hari ($t1,$t2)
+	{
+		$ex1 =explode("-",$t1);
+		$year1 = $ex1 [0];
+		$month1 = $ex1 [1];
+		$date1 = $ex1 [2];
+		$ex2 =explode ("-",$t2);
+		$year2 = $ex2 [0];
+		$month2 = $ex2 [1];
+		$date2 = $ex2 [2];
+
+		$jdn1 = GregorianToJD ($month1,$date1,$year1);
+		$jdn2 = GregorianToJD ($month2,$date2,$year2);
+		$beda = $jdn2 - $jdn1 ;
+		return $beda;
+	}
+
+	function modif_kata($text)
+	{
+		$pisah = explode(" ",$text);
+		foreach ($pisah as $katabaru){
+			$lower = ucfirst(strtolower($katabaru));
+			$newtext[]      = $lower;
+		}
+		$cantik	= implode (" ",$newtext);
+		return $cantik;
+	}
+
+	function to_excel($array, $filename)
+	{
+		header('Content-type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment; filename='.$filename.'.xls');
+
+		$h = array();
+		foreach($array->result_array() as $row){
+			foreach($row as $key=>$val){
+				if(!in_array($key, $h)){
+				$h[] = $key;
+				}
+			}
+		}
+
+		echo '<table><tr>';
+		echo '<th>No</th>';
+		foreach($h as $key) {
+			$key = ucwords($key);
+			echo '<th>'.$key.'</th>';
+		}
+		echo '</tr>';
+		$x=1;
+		foreach($array->result_array() as $row){
+			echo '<tr>';
+			echo '<td>'.$x.'</td>';
+			foreach($row as $val)
+				writeRow($val);
+		$x++;
+		}
+		echo '</tr>';
+		echo '</table>';
+	}
+
+	function subMenu()
+	{
+		$CI =& get_instance();
+		$q = "SELECT * FROM config_menu";
+		$query = $CI->db->query($q);
+		$isi = mysql_num_rows($query);
+		return $isi;
+	}
+
+	function adddate($vardate,$added)
+	{
+		$data = explode("-", $vardate);
+		$date = new DateTime();
+		$date->setDate($data[0], $data[1], $data[2]);
+		$date->modify("".$added."");
+		$day= $date->format("Y-m-d");
+		return $day;
+	}	
+?>

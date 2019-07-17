@@ -1,0 +1,37 @@
+.content-mobile
+{
+    display: none;
+}
+
+.skin-red-kemendagri .wrapper, .skin-red-kemendagri .left-side,
+.skin-red-kemendagri .content-wrapper, .skin-red-kemendagri .main-footer
+{
+    background: rgb(246, 236, 222);
+    border-left: none;    
+}
+
+@media only screen and (max-width: 991px) {
+    #header_navigator {
+        display: none;
+    }
+
+    .sidebar-menu {
+        margin-top: 23px;
+    }    
+    .content-mobile
+    {
+        display: inline;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #header_navigator {
+        display: none;
+    }
+
+    .content-mobile
+    {
+        padding-top: 73px;        
+        display: inline;
+    }
+}
