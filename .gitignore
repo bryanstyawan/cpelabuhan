@@ -43,4 +43,4 @@ id_rsa
 .ftpignore
 
 ### config
-# /application/config/database.php
+/application/config/database.php
