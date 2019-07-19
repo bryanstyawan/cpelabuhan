@@ -1,4 +1,17 @@
 v1.0.0    
+2019-07-19 
+==========
+New:
+- Pipeline
+- Pump Number
+- Tank Number
+- Setup database
+- Setup gitignore for database 
+Improved:
+Fixed:
+Canceled:
+
+v1.0.0    
 2019-07-13
 ==========
 New:

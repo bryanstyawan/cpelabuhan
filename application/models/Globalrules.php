@@ -559,4 +559,42 @@ By: Bryan Setyawan
 		
 		return $store;
 	}
+
+	public function get_pump_number()
+	{
+		# code...
+		$sql = "SELECT a.*,
+						b.name as name_tank_number
+				FROM mr_pump_number a
+				LEFT JOIN mr_tank_number b ON a.id_tank_number = b.id";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{
+			return $query->result();
+		}
+		else
+		{
+			return 0;
+		}
+	}	
+
+	public function get_pipeline()
+	{
+		# code...
+		$sql = "SELECT a.*,
+						b.name as name_pump_number,
+						c.name as name_tank_number						
+				FROM mr_pipeline a
+				LEFT JOIN mr_pump_number b ON a.id_pump_number = b.id
+				LEFT JOIN mr_tank_number c ON b.id_tank_number = c.id";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{
+			return $query->result();
+		}
+		else
+		{
+			return 0;
+		}
+	}		
 }
