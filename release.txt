@@ -2,6 +2,18 @@ v1.0.0
 2019-07-19 
 ==========
 New:
+- Main Transaction
+- Activity Transaction
+Improved:
+- tarik data Pipeline
+Fixed:
+- Ubah nama label Pump Number ke pipeline [Pipeline]
+Canceled:
+
+v1.0.0    
+2019-07-19 
+==========
+New:
 - Pipeline
 - Pump Number
 - Tank Number

@@ -1,3 +1,7 @@
+<section id="activitydata">
+
+</section>
+
 <section id="viewdata">
 	<div class="col-xs-12">
 		<div class="box">
@@ -10,10 +14,11 @@
 					<thead>
 				<tr>
 					<th>No</th>
-					<th>Tank Number</th>
-					<th>Pump Number</th>
-					<th>Pipeline</th>					
-					<th>action</th>
+					<th>Jetty</th>
+					<th>Vessel</th>
+					<th>Date</th>
+					<th>Last Activity</th>					
+					<th>Action</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -25,11 +30,13 @@
 					?>
 						<tr>
 							<td><?php echo $i+1;?></td>
-							<td><?php echo $list[$i]->name_tank_number;?></td>
-							<td><?php echo $list[$i]->name_pump_number;?></td>														
-							<td><?php echo $list[$i]->name;?></td>
+							<td><?php echo $list[$i]->name_jetty;?></td>
+							<td><?php echo $list[$i]->name_vessel;?></td>
+							<td><?php echo $list[$i]->date;?></td>
+							<td><?php echo $list[$i]->last_activity;?></td>																												
 							<td>
-								<button class="btn btn-primary btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
+								<button class="btn btn-primary btn-xs" onclick="activity('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Activity</button>&nbsp;&nbsp;								
+								<button class="btn btn-warning btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
 								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Hapus</button>
 							</td>
 						</tr>					
@@ -59,16 +66,16 @@
 		
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Tank Number</label>
-							<select class="form-control" id="f_tank_number">
+							<label>Jetty</label>
+							<select class="form-control" id="f_jetty">
 								<option value=""> - - - - - </option>
 								<?php
-									if ($tank_number != array()) {
+									if ($jetty != array()) {
 										# code...
-										for ($i=0; $i < count($tank_number); $i++) { 
+										for ($i=0; $i < count($jetty); $i++) { 
 											# code...
 								?>
-											<option value="<?=$tank_number[$i]['id'];?>"><?=$tank_number[$i]['name'];?></option>
+											<option value="<?=$jetty[$i]['id'];?>"><?=$jetty[$i]['name'];?></option>
 								<?php
 										}
 									}
@@ -79,18 +86,24 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Pump Number</label>
-							<select class="form-control" id="f_pump_number">
+							<label>Vessel</label>
+							<select class="form-control" id="f_vessel">
+								<option value=""> - - - - - </option>								
+								<?php
+									if ($vessel != array()) {
+										# code...
+										for ($i=0; $i < count($vessel); $i++) { 
+											# code...
+								?>
+											<option value="<?=$vessel[$i]['id'];?>"><?=$vessel[$i]['name'];?></option>
+								<?php
+										}
+									}
+								?>								
 							</select>
 						</div>
 					</div>					
 
-					<div class="col-md-6">
-						<div class="form-group">
-							<label>Pipeline</label>
-							<input type="text" class="form-control" id="f_name" placeholder="Nama">
-						</div>
-					</div>
 				</div>
 
 			</div><!-- /.box-body -->
@@ -112,45 +125,31 @@ $(document).ready(function(){
 		$("#section_file").css({"display": "none"})				
 	})
 
-	$("#closeData").click(function(){
+	$(".closeData").click(function(){
+		$("#activitydata").css({"display": "none"})				
 		$("#formdata").css({"display": "none"})
 		$("#viewdata").css({"display": ""})		
 	})	
 
-	$("#f_tank_number").change(function() {
-		var val_data = $(this).val();		
-		$.ajax({
-			url  : "<?php echo site_url();?>master/pipeline/get_pump_number",
-			type : "post",
-			data : "val_data="+val_data,
-			beforeSend:function(){
-				$("#loadprosess").modal('show');
-				$("#f_pump_number").html('');				
-			},
-			success:function(msg){
-				$("#f_pump_number").html(msg);
-				setTimeout(function(){
-					$("#loadprosess").modal('hide');
-				}, 500);
-			}
-		})		
-	})
+	$("#closeData").click(function(){
+		$("#activitydata").css({"display": ""})				
+		$("#formdata").css({"display": "none"})
+		$("#viewdata").css({"display": ""})		
+	})	
 
 	$("#btn-trigger-controll").click(function(){
 		var res_status       = 0;
 		var flag_allowed     = 0;
 		var oid              = $("#oid").val();
 		var crud             = $("#crud").val();
-		var f_id_tank_number = $("#f_tank_number").val();		
-		var f_id_pump_number = $("#f_pump_number").val();
-		var f_name           = $("#f_name").val();
+		var f_id_jetty       = $("#f_jetty").val();		
+		var f_id_vessel      = $("#f_vessel").val();
 
 		var data_sender = {
 			'oid'   			: oid,
 			'crud'  			: crud,
-			'f_id_tank_number' 	: f_id_tank_number,
-			'f_id_pump_number' 	: f_id_pump_number,			
-			'f_name'			: f_name
+			'f_id_jetty' 		: f_id_jetty,
+			'f_id_vessel' 		: f_id_vessel
 		}
 
 		if (crud == 'insert') {
@@ -161,43 +160,31 @@ $(document).ready(function(){
 			flag_allowed = 1;
 		}
 
-		if (f_name.length <= 0) {
-			if (f_name.length <= 0) {
-				Lobibox.alert("warning", //AVAILABLE TYPES: "error", "info", "success", "warning"
+		if (flag_allowed == 1) {
+			$.ajax({
+				url :"<?php echo site_url();?>transaction/store",
+				type:"post",
+				data:{data_sender : data_sender},
+				beforeSend:function(){
+					$("#editData").modal('hide');
+					$("#loadprosess").modal('show');
+				},
+				success:function(msg){
+					var obj = jQuery.parseJSON (msg);
+					ajax_status(obj);
+				},
+				error:function(jqXHR,exception)
 				{
-					title: 'Peringatan',					
-					msg: "Data Judul Buku belum terisi, mohon lengkapi data tersebut"
-				});				
-			}
-		}
-		else
-		{
-			if (flag_allowed == 1) {
-				$.ajax({
-					url :"<?php echo site_url();?>master/pipeline/store",
-					type:"post",
-					data:{data_sender : data_sender},
-					beforeSend:function(){
-						$("#editData").modal('hide');
-						$("#loadprosess").modal('show');
-					},
-					success:function(msg){
-						var obj = jQuery.parseJSON (msg);
-						ajax_status(obj);
-					},
-					error:function(jqXHR,exception)
-					{
-						ajax_catch(jqXHR,exception);					
-					}
-				})					
-			}
+					ajax_catch(jqXHR,exception);					
+				}
+			})					
 		}
 	})
 })
 
 function edit(id){
 	$.ajax({
-		url :"<?php echo site_url();?>master/pipeline/get_data/"+id+"/ajax/mr_pipeline",
+		url :"<?php echo site_url();?>transaction/get_data/"+id+"/ajax/tr_vessel_jetty",
 		type:"post",
 		beforeSend:function(){
 			$("#loadprosess").modal('show');
@@ -213,26 +200,8 @@ function edit(id){
 				$("#formdata > div > div > div.box-header > h3").html("Ubah Data");		
 				$("#crud").val('update');
 				$("#oid").val(obj.data[0]['id']);
-				$("#f_tank_number").val(obj.data[0]['id_tank_number']);
-				$("#f_pump_number").val(obj.data[0]['id_pump_number']);								
-				$("#f_name").val(obj.data[0]['name']);		
-				console.log(obj.data);
-				if (obj.data.pump_data.length != 0) 
-				{
-					var toAppend1 = '<option value=""> - - - </option>';					
-					for (index = 0; index < obj.data.pump_data.length; index++) 
-					{
-						_text = "";
-						if (obj.data.pump_data[index]['id'] == obj.data[0]['id_pump_number']) {
-							_text = "selected";
-						}
-
-						toAppend1 += '<option value="'+obj.data.pump_data[index].id+'" '+_text+'>'+obj.data.pump_data[index].name+'</option>';					
-					}
-					$('#f_pump_number').append(toAppend1);					
-				}						
-
-
+				$("#f_jetty").val(obj.data[0]['id_jetty']);
+				$("#f_vessel").val(obj.data[0]['id_vessel']);								
 				$("#loadprosess").modal('hide');				
 			}
 			else
@@ -249,6 +218,27 @@ function edit(id){
 		}
 	})
 }
+
+function activity(id)
+{					
+	$.ajax({
+		url :"<?php echo site_url();?>transaction/vessel_activity/"+id,
+		type:"post",
+		beforeSend:function(){
+			$("#loadprosess").modal('show');
+			$("#viewdata").css({"display": "none"})			
+		},
+		success:function(msg){			
+            $("#loadprosess").modal('hide');								
+			$("#activitydata").html(msg);
+		},
+		error:function(jqXHR,exception)
+		{
+			ajax_catch(jqXHR,exception);					
+		}
+	})	
+}
+
 
 function del(id)
 {					

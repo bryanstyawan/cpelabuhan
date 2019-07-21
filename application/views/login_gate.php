@@ -492,7 +492,7 @@ input {
 				<div class="wrapper">
 					<!-- Icon -->
 					<div class="fadeIn first text-center">
-						<a href="http://ecodu.id"><h2>Controlling Pelabuhan</h2></a>
+						<a href="#"><h2>Controlling Pelabuhan</h2></a>
 						<!-- <img src="<?=base_url();?>/assets_home/logo.png" id="icon" alt="User Icon" /> -->
 					</div>
 					<div id="formContent">

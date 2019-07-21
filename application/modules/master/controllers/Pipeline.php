@@ -111,4 +111,13 @@ class Pipeline extends CI_Controller {
 		$data['list'] = $this->Allcrud->getData('mr_pump_number',array('id_tank_number'=>$this->input->post('val_data')));
 		$this->load->view('master/pipeline/combo_pump_number',$data);		
 	}
+
+	public function get_pipeline()
+	{
+		# code...
+		$this->Globalrules->session_rule();								
+		$data_sender = $this->input->post('data_sender');
+		$data['list'] = $this->Allcrud->getData('mr_pipeline',array('id_pump_number'=>$data_sender['id_pump_number'],'id_tank_number'=>$data_sender['id_tank_number']));
+		$this->load->view('master/pipeline/combo_pump_number',$data);		
+	}	
 }
