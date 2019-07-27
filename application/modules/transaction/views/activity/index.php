@@ -2,8 +2,8 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Activity</h3>
-				<div class="box-tools pull-right"><button class="btn btn-block btn-success closeData"><i class="fa fa-arrow-circle-o-left"></i> Kembali</button></div>				
+				<h3 class="box-title">Jetty & Vessel</h3>
+				<div class="box-tools pull-right"><button class="btn btn-block btn-success closeData"><i class="fa fa-arrow-circle-o-left"></i> Main Transaction</button></div>				
 			</div>
 			<div class="box-body">
 				<table class="table table-bordered table-striped table-view">
@@ -41,8 +41,8 @@
 	<div class="col-xs-12" id="activity_viewdata">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title"></h3>
-				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Tambah Data</button></div>
+				<h3 class="box-title">Activity</h3>
+				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div>
 			<div class="box-body">
 				<table class="table table-bordered table-striped table-view">
@@ -88,8 +88,9 @@
 									<label class="col-lg-12"><?php echo $vessel_activity[$i]->audit_time_update;?></label>
 								</td>
 								<td>
-									<button class="btn btn-primary btn-xs col-lg-12" onclick="activity_edit('<?php echo $vessel_activity[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
-									<button class="btn btn-danger btn-xs col-lg-12" onclick="activity_del('<?php echo $vessel_activity[$i]->id;?>','<?php echo $vessel_activity[$i]->id_vessel_jetty;?>')"><i class="fa fa-trash"></i> Hapus</button>
+									<button class="btn btn-success btn-xs col-lg-12" style="margin:5px;" onclick="activity_proses('<?php echo $vessel_activity[$i]->id;?>','<?php echo $vessel_activity[$i]->id_vessel_jetty;?>')"><i class="fa fa-edit"></i> Process</button>								
+									<button class="btn btn-primary btn-xs col-lg-12"  style="margin:5px;" onclick="activity_edit('<?php echo $vessel_activity[$i]->id;?>')"><i class="fa fa-edit"></i> Edit</button>
+									<button class="btn btn-danger btn-xs col-lg-12"  style="margin:5px;" onclick="activity_del('<?php echo $vessel_activity[$i]->id;?>','<?php echo $vessel_activity[$i]->id_vessel_jetty;?>')"><i class="fa fa-trash"></i> Delete</button>
 								</td>
                             </tr>					
                         <?php
@@ -100,7 +101,11 @@
 				</table>
 			</div>
         </div>
-    </div>
+	</div>
+	
+	<div class="col-xs-12" id="activity_proses_viewdata" style="display:none;padding: 0px;">
+	</div>	
+
 
 	<div class="col-xs-12" id="activity_formdata" style="display:none">
 		<div class="box">
@@ -241,7 +246,7 @@ $(document).ready(function(){
 		$(".form-control").val('');
 		$("#activity_formdata").css({"display": ""})
 		$("#activity_viewdata").css({"display": "none"})
-		$("#activity_formdata > div > div.box-header > h3").html("Tambah Data");		
+		$("#activity_formdata > div > div.box-header > h3").html("Add Data");		
 		$("#activity_crud").val('insert');
 	})
 
@@ -357,7 +362,7 @@ function activity_edit(id){
 			{
 				$("#activity_formdata").css({"display": ""})
 				$("#activity_viewdata").css({"display": "none"})
-				$("#activity_formdata > div > div.box-header > h3").html("Ubah Data");		
+				$("#activity_formdata > div > div.box-header > h3").html("Edit Data");		
 				$("#activity_crud").val('update');
 				$("#activity_oid_vessel_activity").val(obj.data[0]['id']);
 				$("#f_activity").val(obj.data[0]['id_activity']);
@@ -458,5 +463,25 @@ function activity_del(id,oid)
 			}
 		}
 	})		
+}
+
+function activity_proses(id,oid) {
+	$.ajax({
+		url :"<?php echo site_url();?>transaction/activity_proses/"+id+"/"+oid,
+		type:"post",
+		beforeSend:function(){
+			$("#loadprosess").modal('show');
+		},
+		success:function(msg){
+			$("#activity_proses_viewdata").css({"display": ""})
+			$("#activity_viewdata").css({"display": "none"})
+			$("#activity_proses_viewdata").html(msg);			
+			$("#loadprosess").modal('hide');						
+		},
+		error:function(jqXHR,exception)
+		{
+			ajax_catch(jqXHR,exception);					
+		}
+	})	
 }
 </script>

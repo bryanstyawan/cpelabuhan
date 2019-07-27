@@ -1,4 +1,13 @@
 v1.0.0    
+2019-07-27 
+==========
+New:
+- Activity Process
+Improved:
+Fixed:
+Canceled:
+
+v1.0.0    
 2019-07-19 
 ==========
 New:

@@ -7,7 +7,7 @@
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title"></h3>
-				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Tambah Data</button></div>
+				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div><!-- /.box-header -->
 			<div class="box-body" id="table_fill">
 				<table class="table table-bordered table-striped table-view">
@@ -36,8 +36,8 @@
 							<td><?php echo $list[$i]->last_activity;?></td>																												
 							<td>
 								<button class="btn btn-primary btn-xs" onclick="activity('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Activity</button>&nbsp;&nbsp;								
-								<button class="btn btn-warning btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
-								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Hapus</button>
+								<button class="btn btn-warning btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Edit</button>&nbsp;&nbsp;
+								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Delete</button>
 							</td>
 						</tr>					
 					<?php
@@ -108,7 +108,7 @@
 
 			</div><!-- /.box-body -->
 			<div class="box-footer">
-				<a class="btn btn-success pull-right" id="btn-trigger-controll"><i class="fa fa-save"></i>&nbsp; Simpan</a>
+				<a class="btn btn-success pull-right" id="btn-trigger-controll"><i class="fa fa-save"></i>&nbsp; Save</a>
 			</div>
 		</div><!-- /.box -->
 	</div>
@@ -120,7 +120,7 @@ $(document).ready(function(){
 		$(".form-control").val('');
 		$("#formdata").css({"display": ""})
 		$("#viewdata").css({"display": "none"})
-		$("#formdata > div > div > div.box-header > h3").html("Tambah Data");		
+		$("#formdata > div > div > div.box-header > h3").html("Add Data");		
 		$("#crud").val('insert');
 		$("#section_file").css({"display": "none"})				
 	})
@@ -197,7 +197,7 @@ function edit(id){
 				$("#formdata").css({"display": ""})
 				$("#section_file").css({"display": ""})										
 				$("#viewdata").css({"display": "none"})
-				$("#formdata > div > div > div.box-header > h3").html("Ubah Data");		
+				$("#formdata > div > div > div.box-header > h3").html("Edit Data");		
 				$("#crud").val('update');
 				$("#oid").val(obj.data[0]['id']);
 				$("#f_jetty").val(obj.data[0]['id_jetty']);
@@ -244,7 +244,7 @@ function del(id)
 {					
 	Lobibox.confirm({
 		title   : "Konfirmasi",
-		msg     : "Anda yakin akan menghapus data ini ?",
+		msg     : "Delete this data ?",
 		callback: function ($this, type) {
 			if (type === 'yes'){			
 				$.ajax({
@@ -266,9 +266,5 @@ function del(id)
 			}
 		}
 	})		
-}
-
-function detail(id) {
-	window.location.href = "<?php echo site_url();?>bank_data/soal/detail/"+id
 }
 </script>

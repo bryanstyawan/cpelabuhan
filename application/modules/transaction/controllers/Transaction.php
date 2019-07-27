@@ -199,5 +199,60 @@ class Transaction extends CI_Controller {
 					);
 		echo json_encode($res);		
 	}	
-	
+
+	public function activity_proses($id,$oid)
+	{
+		# code...
+		$data['vessel_activity']  = $this->Mtransaction->get_vessel_activity($oid,$id,'ASC');
+		$data['activity_process'] = $this->Allcrud->getData('tr_activity_process',array('id_vessel_activity'=>$id),array('process_datetime','ASC'))->result_array();
+		$data['stop_by']          = $this->Allcrud->listData('mr_status_stop')->result_array();		
+		$data['product']          = $this->Allcrud->listData('mr_product')->result_array();				
+		$this->load->view('transaction/activity_proses/index',$data);		
+	}	
+
+	public function process_activity_store($arg=NULL,$oid=NULL)
+	{
+		# code...
+		$res_data    = 0;
+		$text_status = '';
+		$data_sender = array();
+		if ($arg == NULL) {
+			# code...
+			$data_sender = $this->input->post('data_sender');
+		}
+		else {
+			# code...
+			$data_sender['crud'] = $arg;
+			$data_sender['oid']  = $oid;
+		}
+
+		$data_store  = $this->Globalrules->trigger_insert_update($data_sender['crud']);
+		if ($data_sender['crud'] == 'insert') {
+			# code...
+			$data_store['id_vessel_activity']   = $data_sender['oid'];
+			$data_store['id_status_stop']       = $data_sender['status_stop'];			
+			$data_store['process_status']       = $data_sender['process_status'];
+			$data_store['process_datetime']     = date('Y-m-d H:i:s');
+			$data_store['remarks']              = $data_sender['remarks'];
+			$res_data                           = $this->Allcrud->addData('tr_activity_process',$data_store);
+			$text_status                        = $this->Globalrules->check_status_res($res_data,'Data berhasil ditambah.');						
+		} elseif ($data_sender['crud'] == 'update') {
+			# code...
+			$data_store['id_jetty']  = $data_sender['f_id_jetty'];									
+			$data_store['id_vessel']  = $data_sender['f_id_vessel'];
+			            $res_data          = $this->Allcrud->editData('tr_vessel_jetty',$data_store,array('id'=>$data_sender['oid']));
+			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data berhasil diupdate.');			
+		} elseif ($data_sender['crud'] == 'delete') {
+			# code...
+			$res_data          = $this->Allcrud->delData('tr_vessel_jetty',array('id'=>$data_sender['oid']));
+			$text_status       = $this->Globalrules->check_status_res($res_data,'Data telah berhasil dihapus.');			
+		}
+
+		$res = array
+					(
+						'status' => $res_data,
+						'text'   => $text_status
+					);
+		echo json_encode($res);		
+	}
 }
