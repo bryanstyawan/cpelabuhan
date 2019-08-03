@@ -2,6 +2,18 @@ v1.0.0
 2019-07-27 
 ==========
 New:
+- Report 1 layout
+- Report 1 filter
+- Report 2 layout
+- Report 2 filter (2 layer)
+Improved:
+Fixed:
+Canceled:
+
+v1.0.0    
+2019-07-27 
+==========
+New:
 - Activity Process
 Improved:
 Fixed:
