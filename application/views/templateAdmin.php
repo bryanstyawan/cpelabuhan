@@ -480,21 +480,21 @@ function ajax_catch(jqXHR,exception) {
         })
 
         $(".table-view").DataTable({
-            "oLanguage": {
-                "sSearch"    : "Pencarian :",
-                "sInfoEmpty" : "",
-                "sLengthMenu": "Show _MENU_ entries",
-                "oPaginate"  : {
-                    "sFirst"   : "Halaman Pertama",       // This is the link to the first page
-                    "sPrevious": "Halaman Sebelumnya",    // This is the link to the previous page
-                    "sNext"    : "Halaman Selanjutnya",   // This is the link to the next page
-                    "sLast"    : "Halaman Terakhir"       // This is the link to the last page
-                },
-                "sSearchPlaceholder": "Ketik untuk mencari",
-                "sLengthMenu"       : "Menampilkan &nbsp; _MENU_ &nbsp;Data",
-                "sInfo"             : "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                "sZeroRecords"      : "Data tidak ditemukan"
-            },
+            // "oLanguage": {
+            //     "sSearch"    : "Pencarian :",
+            //     "sInfoEmpty" : "",
+            //     "sLengthMenu": "Show _MENU_ entries",
+            //     "oPaginate"  : {
+            //         "sFirst"   : "Halaman Pertama",       // This is the link to the first page
+            //         "sPrevious": "Halaman Sebelumnya",    // This is the link to the previous page
+            //         "sNext"    : "Halaman Selanjutnya",   // This is the link to the next page
+            //         "sLast"    : "Halaman Terakhir"       // This is the link to the last page
+            //     },
+            //     "sSearchPlaceholder": "Ketik untuk mencari",
+            //     "sLengthMenu"       : "Menampilkan &nbsp; _MENU_ &nbsp;Data",
+            //     "sInfo"             : "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            //     "sZeroRecords"      : "Data tidak ditemukan"
+            // },
             "dom": "<'row'<'col-sm-6'f><'col-sm-6'l>>" +
                     "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
                     "<'row'<'col-sm-12'tr>>" +
