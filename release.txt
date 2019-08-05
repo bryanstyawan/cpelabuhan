@@ -8,6 +8,7 @@ Improved:
 - Change language datatable
 Fixed:
 Canceled:
+- Export 1 & 2
 
 v1.0.0    
 2019-07-27 

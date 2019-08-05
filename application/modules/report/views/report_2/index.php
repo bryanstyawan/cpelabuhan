@@ -57,7 +57,7 @@
 					
 					<div class="col-md-12">
 						<a class="btn btn-success pull-right" style="margin:5px;" id="btn_filter"><i class="fa fa-search"></i> Filter</a>
-						<a class="btn btn-primary pull-right" style="margin:5px;" id="btn_export_excel"><i class="fa fa-print"></i> Export</a>						
+						<!-- <a class="btn btn-primary pull-right" style="margin:5px;" id="btn_export_excel"><i class="fa fa-print"></i> Export</a>						 -->
 					</div>					
 				</div>
 				<table class="table table-bordered table-striped table-view">
