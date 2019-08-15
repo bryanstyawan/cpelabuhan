@@ -152,7 +152,7 @@ $(document).ready(function()
 {
     $('.timerange').datepicker({
         maxDate: new Date,
-        format: 'dd-mm-yyyy',
+        format: 'yyyy-mm-dd',
         todayHighlight: true,
         daysOfWeekHighlighted: "0,6"
     });
@@ -164,7 +164,7 @@ $(document).ready(function()
         // daysOfWeekHighlighted: "0,6"
     });    
 
-    $(".timerange").inputmask("dd-mm-yyyy", {"placeholder": "dd-mm-yyyy"});
+    $(".timerange").inputmask("yyyy-mm-dd", {"placeholder": "yyyy-mm-dd"});
 
     $("#noti-tab").click(function(){
         // body...

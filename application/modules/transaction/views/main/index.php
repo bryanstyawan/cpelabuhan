@@ -10,7 +10,7 @@
 				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div><!-- /.box-header -->
 			<div class="box-body" id="table_fill">
-				<table class="table table-bordered table-striped table-view">
+				<table class="table table-bordered table-striped table-view" id="main_table">
 					<thead>
 				<tr>
 					<th>No</th>
@@ -20,6 +20,14 @@
 					<th>Last Activity</th>					
 					<th>Action</th>
 				</tr>
+				<tr>
+					<th></th>
+					<th><input id="f_1" placeholder="Jetty" class="form-control"></th>
+					<th><input id="f_2" placeholder="Vessel" class="form-control"></th>
+					<th><input id="f_3" placeholder="Date" class="form-control timerange"></th>
+					<th><input id="f_4" placeholder="Last Activity" class="form-control"></th>
+					<th><a class="btn btn-xs btn-primary col-lg-12" id="btn_search"><i class="fa fa-search"></i>Search</a></th>
+				</tr>				
 				</thead>
 				<tbody>
 					<?php
@@ -35,9 +43,9 @@
 							<td><?php echo $list[$i]->date;?></td>
 							<td><?php echo $list[$i]->last_activity;?></td>																												
 							<td>
-								<button class="btn btn-primary btn-xs" onclick="activity('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Activity</button>&nbsp;&nbsp;								
-								<button class="btn btn-warning btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Edit</button>&nbsp;&nbsp;
-								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Delete</button>
+								<button class="btn btn-primary btn-xs col-lg-12" style="margin:5px" onclick="activity('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Activity</button>								
+								<button class="btn btn-warning btn-xs col-lg-12" style="margin:5px" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Edit</button>
+								<button class="btn btn-danger btn-xs col-lg-12" style="margin:5px" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Delete</button>
 							</td>
 						</tr>					
 					<?php
@@ -136,6 +144,64 @@ $(document).ready(function(){
 		$("#formdata").css({"display": "none"})
 		$("#viewdata").css({"display": ""})		
 	})	
+
+	$("#btn_search").click(function() {
+		var f_1 = $("#f_1").val();
+		var f_2 = $("#f_2").val();
+		var f_3 = $("#f_3").val();
+		var f_4 = $("#f_4").val();						
+
+		var data_sender = {
+			'f_1'   			: f_1,
+			'f_2'   			: f_2,
+			'f_3'   			: f_3,
+			'f_4'   			: f_4						
+		}		
+
+		$.ajax({
+			url :"<?php echo site_url();?>transaction/search_main_transaction",
+			type:"post",
+			data:{data_sender : data_sender},
+			beforeSend:function(){
+				$("#main_table > tbody").html('');
+				$("#loadprosess").modal('show');
+			},
+			success:function(msg){
+				var obj = jQuery.parseJSON (msg);
+				if (obj.status == 1) {
+					push_row = "";					
+					for (let index = 0; index < obj.data.length; index++) 
+					{
+						push_row += '<tr>'+
+										'<td>'+(index +1)+'</td>'+
+										'<td>'+obj.data[index].name_jetty+'</td>'+
+										'<td>'+obj.data[index].name_vessel+'</td>'+
+										'<td>'+obj.data[index].date+'</td>'+
+										'<td>'+obj.data[index].last_activity+'</td>'+
+										'<td></td>'+                                                                                                                
+									'</tr>';						
+						console.log(obj.data[index]);						
+					}
+
+					$("#main_table > tbody").html(push_row);
+					$("#loadprosess").modal('hide');					
+				}
+				else 
+				{
+					push_row = '<tr>'+
+										'<td colspan="6">'+obj.text+'</td>'+
+									'</tr>';				
+					$("#main_table > tbody").html(push_row);										
+					$("#loadprosess").modal('hide');					
+				}
+				// ajax_status(obj);
+			},
+			error:function(jqXHR,exception)
+			{
+				ajax_catch(jqXHR,exception);					
+			} 
+		})		
+	})
 
 	$("#btn-trigger-controll").click(function(){
 		var res_status       = 0;

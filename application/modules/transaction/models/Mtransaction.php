@@ -5,14 +5,25 @@ class Mtransaction extends CI_Model {
 		parent::__construct();
 	}
 
-	public function get_vessel_jetty($id=NULL)
+	public function get_vessel_jetty($id=NULL,$arg=NULL)
 	{
 		# code...
 		$sql_helper = "";
-		if ($id!=NULL) {
+		if ($arg == NULL) {
 			# code...
-			$sql_helper = "WHERE a.id = '".$id."'";
+			if ($id!=NULL) {
+				# code...
+				$sql_helper = "WHERE a.id = '".$id."'";
+			}			
 		}
+		elseif ($arg == 'filter') {
+			# code...
+			$sql_helper = "WHERE b.name LIKE '%".$id['f_1']."%'
+							AND c.name LIKE '%".$id['f_2']."%'
+							AND IFNULL(d. NAME, 'none') LIKE '%".$id['f_4']."%'
+							AND a.date LIKE '%".$id['f_3']."%'";
+		}
+
 		$sql = "SELECT 	a.id,
 						b.name as name_jetty,
 						c.name as name_vessel,
@@ -23,6 +34,7 @@ class Mtransaction extends CI_Model {
 				LEFT JOIN mr_vessel c ON a.id_vessel = c.id
 				LEFT JOIN mr_activity d ON a.last_activity = d.id				
 				".$sql_helper."";
+				// print_r($sql);die();
 		$query = $this->db->query($sql);
 		if($query->num_rows() > 0)
 		{

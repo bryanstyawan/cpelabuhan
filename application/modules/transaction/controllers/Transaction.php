@@ -286,4 +286,21 @@ class Transaction extends CI_Controller {
 		echo json_encode($res);		
 
 	}
+
+	public function search_main_transaction()
+	{
+		# code...
+		$text_status = "";
+		$data_sender = $this->input->post('data_sender');
+		$data        = $this->Mtransaction->get_vessel_jetty($data_sender,'filter');			
+		$res_data    = ($data == 0) ? 0 : 1 ;
+		$text_status = ($data == 0) ? 'No matching records found' : '' ;		
+		$res         = array
+						(
+							'status' => $res_data,
+							'data'	 => $data,
+							'text'   => $text_status
+						);
+		echo json_encode($res);		
+	}
 }

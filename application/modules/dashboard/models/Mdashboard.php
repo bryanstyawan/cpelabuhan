@@ -8,6 +8,33 @@ class Mdashboard extends CI_Model
 	
 	}
 
+	public function get_last_activity_jetty($id_jetty)
+	{
+		# code...
+		$sql = "SELECT 	a.id,
+						b.name as name_jetty,
+						c.name as name_vessel,
+						IFNULL(d.name,'none') as last_activity,
+						a.date
+				FROM tr_vessel_jetty a
+				LEFT JOIN mr_jetty b ON a.id_jetty = b.id
+				LEFT JOIN mr_vessel c ON a.id_vessel = c.id
+				LEFT JOIN mr_activity d ON a.last_activity = d.id
+				WHERE a.id_jetty = '".$id_jetty."'
+				ORDER BY a.audit_time_insert DESC
+				LIMIT 1";
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{
+			return $query->result();
+		}
+		else
+		{
+			return 0;
+		}								
+	}		
+
+
 	public function get_chat_user($param,$id=NULL,$id2=NULL)
 	{
 		# code...
@@ -68,25 +95,4 @@ class Mdashboard extends CI_Model
 			return 0;
 		}								
 	}
-	
-	public function get_history_golongan()
-	{
-		# code...
-		$sql = "SELECT a.*,
-						b.nama_pangkat
-				FROM mr_history_golongan a
-				JOIN mr_golongan b
-				ON a.id_golongan = b.id
-				WHERE a.id_pegawai = '".$this->session->userdata('sesUser')."'
-				ORDER BY a.id";
-		$query = $this->db->query($sql);
-		if($query->num_rows() > 0)
-		{
-			return $query->result();
-		}
-		else
-		{
-			return 0;
-		}								
-	}	
 }

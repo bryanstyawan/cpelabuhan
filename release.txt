@@ -1,4 +1,28 @@
 v1.0.0    
+2019-08-15 
+==========
+New:
+- Mmaster Tank Number
+- Mmaster Pipeline
+- Mmaster Pump Number
+- Check Activity
+- Activity Jetty in Dashboard
+- filter in main transaction
+Improved:
+- Navigasi
+- Tank Number
+- Pipeline
+- Pump Number
+- Change app name into Pertamina Goban
+- Logo
+- Stop by move from Activity_process to vessel_activity
+- change relation vessel_activity
+- Name app in login_gate
+Fixed:
+Canceled:
+- Mbank_data
+
+v1.0.0    
 2019-08-05 
 ==========
 New:
