@@ -1,0 +1,13 @@
+[done] 1. urutan view di add data transaction (< 30 menit)
+		a. activiy 
+		b. route
+
+[done] 2. stop by dipindah ke activity
+[done] 3. urutan proses route produk>tank>pipeline>pump
+[done] 4. tank ada status peringant bahwa tank sudah dipakai (tapi masih bisa di bypass)
+[done] 5. warna disesuaikan dengan pertamina dan tambah logo
+[done] 6. Goban / Pertamina Goban
+7. edit waktu di proses
+8. filter di main transaction
+9. dashboard activity terakhir disetiap jetty
+[done] 10. buat 1 halaman di activity

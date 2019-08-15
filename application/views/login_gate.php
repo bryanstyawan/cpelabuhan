@@ -293,9 +293,9 @@ body {
 .backLeft {
 	position: absolute;
 	left: 0;
-	width: 75%;
-	height: 100%;
-	background: url('<?php echo base_url();?>assets/images/login-backgroundq-1-1080x720.jpg');
+	width: 57%;
+    height: 58%;
+	background: url('<?php echo base_url();?>assets_home/dummy-logo.png');
 	background-size: cover;
 	background-position: 50% 50%;
 }
@@ -492,8 +492,7 @@ input {
 				<div class="wrapper">
 					<!-- Icon -->
 					<div class="fadeIn first text-center">
-						<a href="#"><h2>Controlling Pelabuhan</h2></a>
-						<!-- <img src="<?=base_url();?>/assets_home/logo.png" id="icon" alt="User Icon" /> -->
+						<a href="#"><h2>Goban</h2></a>
 					</div>
 					<div id="formContent">
 
