@@ -3,14 +3,16 @@
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title"></h3>
-				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Tambah Data</button></div>
+				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div><!-- /.box-header -->
 			<div class="box-body" id="table_fill">
 				<table class="table table-bordered table-striped table-view">
 					<thead>
 				<tr>
 					<th>No</th>
+					<th>Product</th>
 					<th>Tank Number</th>
+					<th>Pipeline</th>
 					<th>Pump Number</th>
 					<th>action</th>
 				</tr>
@@ -24,7 +26,9 @@
 					?>
 						<tr>
 							<td><?php echo $i+1;?></td>
+							<td><?php echo $list[$i]->name_product;?></td>
 							<td><?php echo $list[$i]->name_tank_number;?></td>							
+							<td><?php echo $list[$i]->name_pipeline;?></td>
 							<td><?php echo $list[$i]->name;?></td>
 							<td>
 								<button class="btn btn-primary btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
@@ -77,6 +81,23 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
+							<label>Product</label>
+							<input class="form-control" id="f_product" disabled="disabled">
+						</div>
+					</div>					
+
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Pipeline</label>
+							<select class="form-control" id="f_pipeline">
+							</select>
+						</div>
+					</div>					
+
+
+					<div class="col-md-6">
+						<div class="form-group">
 							<label>Pump Number</label>
 							<input type="text" class="form-control" id="f_name" placeholder="Nama">
 						</div>
@@ -97,7 +118,7 @@ $(document).ready(function(){
 		$(".form-control").val('');
 		$("#formdata").css({"display": ""})
 		$("#viewdata").css({"display": "none"})
-		$("#formdata > div > div > div.box-header > h3").html("Tambah Data");		
+		$("#formdata > div > div > div.box-header > h3").html("Add Data");		
 		$("#crud").val('insert');
 		$("#section_file").css({"display": "none"})				
 	})
@@ -107,18 +128,62 @@ $(document).ready(function(){
 		$("#viewdata").css({"display": ""})		
 	})	
 
+	$("#f_tank_number").change(function() {
+		var val_data = $(this).val();		
+		$("#f_product").val('');						
+		$.ajax({
+			url  : "<?php echo site_url();?>master/pipeline/get_product_tank",
+			type : "post",
+			data : "val_data="+val_data,
+			beforeSend:function(){
+				$("#loadprosess").modal('show');
+				$("#f_product").html('');				
+			},
+			success:function(msg){
+				var obj = jQuery.parseJSON (msg);
+				if (obj.status == 1)
+				{
+					$("#f_product").val(obj.data[0]['name_product']);
+					$("#loadprosess").modal('hide');				
+				}
+				else 
+				{
+					$("#loadprosess").modal('hide');
+				}	
+			}
+		})		
+
+		$.ajax({
+			url  : "<?php echo site_url();?>master/pipeline/get_pipeline",
+			type : "post",
+			data : "val_data="+val_data,
+			beforeSend:function(){
+				$("#loadprosess").modal('show');
+				$("#f_pipeline").html('');				
+			},
+			success:function(msg){
+				$("#f_pipeline").html(msg);
+				setTimeout(function(){
+					$("#loadprosess").modal('hide');
+				}, 500);
+			}
+		})		
+	})	
+
 	$("#btn-trigger-controll").click(function(){
 		var res_status       = 0;
 		var flag_allowed     = 0;
 		var oid              = $("#oid").val();
 		var crud             = $("#crud").val();
-		var f_id_tank_number = $("#f_tank_number").val();		
+		var f_id_tank_number = $("#f_tank_number").val();
+		var f_pipeline 		 = $("#f_pipeline").val();				
 		var f_name           = $("#f_name").val();
 
 		var data_sender = {
 			'oid'   			: oid,
 			'crud'  			: crud,
 			'f_id_tank_number' 	: f_id_tank_number,
+			'f_pipeline'		: f_pipeline,
 			'f_name'			: f_name
 		}
 

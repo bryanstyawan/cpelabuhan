@@ -5,7 +5,7 @@ class Pipeline extends CI_Controller {
 
 	public function __construct () {
 		parent::__construct();
-		// $this->load->model ('Mbank_data', '', TRUE);
+		$this->load->model ('Mmaster', '', TRUE);
 	}
 	
 	public function index()
@@ -14,7 +14,7 @@ class Pipeline extends CI_Controller {
 		$data['title']       = 'Pipeline';
 		$data['content']     = 'master/pipeline/index';
 		$data['tank_number'] = $this->Allcrud->listData('mr_tank_number')->result_array();		
-		$data['list']        = $this->Globalrules->get_pipeline();	
+		$data['list']        = $this->Mmaster->get_pipeline();	
 		$this->load->view('templateAdmin',$data);
 	}
 
@@ -39,14 +39,12 @@ class Pipeline extends CI_Controller {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
 			$data_store['id_tank_number']  = $data_sender['f_id_tank_number'];
-			$data_store['id_pump_number']  = $data_sender['f_id_pump_number'];						
 			            $res_data          = $this->Allcrud->addData('mr_pipeline',$data_store);
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data pipeline berhasil ditambah.');						
 		} elseif ($data_sender['crud'] == 'update') {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
 			$data_store['id_tank_number']  = $data_sender['f_id_tank_number'];
-			$data_store['id_pump_number']  = $data_sender['f_id_pump_number'];						
 			            $res_data          = $this->Allcrud->editData('mr_pipeline',$data_store,array('id'=>$data_sender['oid']));
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data pipeline berhasil diupdate.');			
 		} elseif ($data_sender['crud'] == 'delete') {
@@ -116,8 +114,22 @@ class Pipeline extends CI_Controller {
 	{
 		# code...
 		$this->Globalrules->session_rule();								
-		$data_sender = $this->input->post('data_sender');
-		$data['list'] = $this->Allcrud->getData('mr_pipeline',array('id_pump_number'=>$data_sender['id_pump_number'],'id_tank_number'=>$data_sender['id_tank_number']));
+		$data_sender = $this->input->post('val_data');
+		$data['list'] = $this->Allcrud->getData('mr_pipeline',array('id_tank_number'=>$data_sender));
 		$this->load->view('master/pipeline/combo_pump_number',$data);		
+	}
+	
+	public function get_product_tank()
+	{
+		# code...
+		$this->Globalrules->session_rule();								
+		$res_data = $this->Mmaster->get_tank_number($this->input->post('val_data'));
+		$res = array
+					(
+						'status' => ($res_data != 0) ? 1 : 0 ,
+						'data'   => $res_data,
+						'text'   => ''
+					);
+		echo json_encode($res);		
 	}	
 }

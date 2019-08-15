@@ -56,7 +56,7 @@
 			<h3 class="box-title col-xs-6">Activity Proses</h3>
 			<h3 class="box-title col-xs-6">
 				<?php
-					if ($activity_process == array()) {
+					if ($activity_process == 0) {
 						# code...
 				?>
 					<div class="box-tools pull-right"><button class="btn btn-block btn-primary start_process"><i class="fa fa-plus-square"></i> Start</button></div>				
@@ -81,36 +81,36 @@
 				</thead>
 				<tbody>
 					<?php
-						if ($activity_process != array()) {
+						if ($activity_process != 0) {
 							# code...
 							for ($i=0; $i < count($activity_process); $i++) { 
 								# code...
 								$x               = $i+1;								
-								$timestamp       = strtotime($activity_process[$i]['process_datetime']);
+								$timestamp       = strtotime($activity_process[$i]->process_datetime);
 								$the_last        = (count($activity_process) == $x) ? 1 : 0;
 
-								$stop            = $this->Allcrud->getData('mr_status_stop',array('id'=>$activity_process[$i]['id_status_stop']))->result_array();
-								$stop_by_name    = ($stop != array()) ? $stop[0]['name'] : '' ;
+								// $stop            = $this->Allcrud->getData('mr_status_stop',array('id'=>$activity_process[$i]['id_status_stop']))->result_array();
+								// $stop_by_name    = ($stop != array()) ? $stop[0]['name'] : '' ;
 
-								$audit_user      = $this->Allcrud->getData('mr_user',array('id'=>$activity_process[$i]['audit_user_insert']))->result_array();
+								$audit_user      = $this->Allcrud->getData('mr_user',array('id'=>$activity_process[$i]->audit_user_insert))->result_array();
 								$audit_user_name = ($audit_user != array()) ? $audit_user[0]['username'] : '' ;								
 					?>
 							<tr>
 								<td><?=$i+1;?></td>
-								<td><?=$activity_process[$i]['process_status'];?></td>
+								<td><?=$activity_process[$i]->process_status;?></td>
 								<td><?=date('Y-m-d',$timestamp);?></td>
 								<td><?=date('H:i:s',$timestamp);?></td>
-								<td><?=$stop_by_name;?></td>
-								<td><?=$activity_process[$i]['remarks'];?></td>
+								<td><?=$activity_process[$i]->name_stop_by;?></td>
+								<td><?=$activity_process[$i]->remarks;?></td>
 								<td><?=$audit_user_name;?></td>
 								<td>
 									<?php
 										if ($the_last == 1) {
 											# code...
 									?>
-											<!-- <button class="btn btn-danger btn-xs col-lg-12" style="margin:5px;"><i class="fa fa-trash"></i> Delete</button>									 -->
+											<button class="btn btn-warning btn-xs col-lg-12" style="margin:5px;"><i class="fa fa-edit"></i> Edit</button>									
 									<?php
-											if ($activity_process[$i]['process_status'] == 'start') {
+											if ($activity_process[$i]->process_status == 'start') {
 												# code...
 									?>
 												<button class="btn btn-danger btn-xs col-lg-12 stop_process" style="margin:5px;"><i class="fa fa-trashas"></i> Stop</button>									
@@ -178,8 +178,8 @@
 							</div>
 						</div>
 						
-						<label style="color: #000;font-weight: 400;font-size: 19px;">Stop By</label>
-						<div class="form-group">
+						<label style="color: #000;font-weight: 400;font-size: 19px;display:none"">Stop By</label>
+						<div class="form-group" style="display:none">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-star"></i></span>
 								<select class="form-control" id="f_stop_by">

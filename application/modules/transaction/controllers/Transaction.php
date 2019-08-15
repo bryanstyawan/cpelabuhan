@@ -113,6 +113,7 @@ class Transaction extends CI_Controller {
 	public function vessel_activity($id)
 	{
 		# code...
+		$data['stop_by']         = $this->Allcrud->listData('mr_status_stop')->result_array();		
 		$data['vessel_jetty']    = $this->Mtransaction->get_vessel_jetty($id);
 		$data['vessel_activity'] = $this->Mtransaction->get_vessel_activity($id,NULL,'ASC');					
 		$data['tank_number']     = $this->Allcrud->listData('mr_tank_number')->result_array();
@@ -141,12 +142,15 @@ class Transaction extends CI_Controller {
 		if ($data_sender['crud'] == 'insert') {
 			# code...
 			$data_store['id_vessel_jetty']    = $data_sender['oid'];			
+			$data_store['id_tank_number']        = $data_sender['f_id_tank_number'];
 			$data_store['id_pipeline']        = $data_sender['f_id_pipeline'];
+			$data_store['id_pump_number']        = $data_sender['f_id_pump_number'];						
 			$data_store['id_activity']        = $data_sender['f_id_activity'];
-			$data_store['id_product']         = $data_sender['f_id_product'];
+			// $data_store['id_product']         = $data_sender['f_id_product'];
 			$data_store['nominasi']           = $data_sender['f_nominasi'];
 			$data_store['destination']        = $data_sender['f_destination'];
 			$data_store['rate']               = $data_sender['f_rate'];						
+			$data_store['id_status_stop'] 	  = $data_sender['status_stop'];
 			$res_data                         = $this->Allcrud->addData('tr_vessel_activity',$data_store);
 			$text_status                      = $this->Globalrules->check_status_res($res_data,'Data berhasil ditambah.');						
 			$data_store_edit['last_activity'] = $data_sender['f_id_activity'];
@@ -204,7 +208,7 @@ class Transaction extends CI_Controller {
 	{
 		# code...
 		$data['vessel_activity']  = $this->Mtransaction->get_vessel_activity($oid,$id,'ASC');
-		$data['activity_process'] = $this->Allcrud->getData('tr_activity_process',array('id_vessel_activity'=>$id),array('process_datetime','ASC'))->result_array();
+		$data['activity_process'] = $this->Mtransaction->activity_process($id);
 		$data['stop_by']          = $this->Allcrud->listData('mr_status_stop')->result_array();		
 		$data['product']          = $this->Allcrud->listData('mr_product')->result_array();				
 		$this->load->view('transaction/activity_proses/index',$data);		
@@ -254,5 +258,32 @@ class Transaction extends CI_Controller {
 						'text'   => $text_status
 					);
 		echo json_encode($res);		
+	}
+
+	public function check_activity()
+	{
+		# code...
+		$res_data    = 0;
+		$text_status = "";
+		$data_sender = $this->input->post('data_sender');
+		$check       = $this->Mtransaction->check_activity_process($data_sender['f_id_tank_number']);
+		if ($check == 0) {
+			# code...
+			$res_data    = 0;
+			$text_status = "";			
+		}
+		else
+		{
+			$res_data    = 1;
+			$text_status = "The tank has been used, continue the process?";			
+		}
+
+		$res = array
+					(
+						'status' => $res_data,
+						'text'   => $text_status
+					);
+		echo json_encode($res);		
+
 	}
 }

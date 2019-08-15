@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Controlling Pelabuhan</title>
+<title>Pertamina Goban</title>
 
 <!--  favicon
     <link rel="shortcut icon" href="<?php echo base_url();?>assets_home/logo.png"> 
@@ -208,7 +208,7 @@ $(document).click(function(e) {
             </section>        
         </aside>
 
-        <div class="content-wrapper main_background">
+        <div class="content-wrapper main_background" style="min-height: 534px;padding-top: 80px;">
 			<section class="content">
                 <?php
                     if(isset($subtitle) != '')
@@ -244,7 +244,7 @@ $(document).click(function(e) {
         </div>    
     </div>
 
-    <footer class="main-footer" style="margin-left:0px;background-color: #00a85a;padding:26px!important;">
+    <footer class="main-footer" style="margin-left:0px;background-color: #e62129;padding:26px!important;">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">

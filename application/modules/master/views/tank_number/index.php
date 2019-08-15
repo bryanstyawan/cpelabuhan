@@ -10,23 +10,25 @@
 					<thead>
 				<tr>
 					<th>No</th>
-					<th>Nama</th>
+					<th>Tank Number</th>
+					<th>Product</th>
 					<th>action</th>
 				</tr>
 				</thead>
 				<tbody>
 					<?php
-						if ($list != array()) {
+						if ($list != 0) {
 							# code...
 							for ($i=0; $i < count($list); $i++) { 
 								# code...
 					?>
 						<tr>
 							<td><?php echo $i+1;?></td>
-							<td><?php echo $list[$i]['name'];?></td>
+							<td><?php echo $list[$i]->name;?></td>
+							<td><?php echo $list[$i]->name_product;?></td>							
 							<td>
-								<button class="btn btn-primary btn-xs" onclick="edit('<?php echo $list[$i]['id'];?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
-								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]['id'];?>')"><i class="fa fa-trash"></i> Hapus</button>
+								<button class="btn btn-primary btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
+								<button class="btn btn-danger btn-xs" onclick="del('<?php echo $list[$i]->id;?>')"><i class="fa fa-trash"></i> Hapus</button>
 							</td>
 						</tr>					
 					<?php
@@ -58,8 +60,27 @@
 							<input type="text" class="form-control" id="f_name" placeholder="Nama">
 						</div>
 					</div>
-				</div>
 
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Product</label>
+							<select class="form-control" id="f_product">
+								<option value="">- - - Choose - - -</option>
+								<?php
+									if ($product != array()) {
+										# code...
+										for ($i=0; $i < count($product); $i++) { 
+											# code...
+								?>
+											<option value="<?=$product[$i]['id'];?>"><?=$product[$i]['name'];?></option>
+								<?php
+										}
+									}
+								?>
+							</select>
+						</div>
+                    </div>										
+				</div>
 			</div><!-- /.box-body -->
 			<div class="box-footer">
 				<a class="btn btn-success pull-right" id="btn-trigger-controll"><i class="fa fa-save"></i>&nbsp; Simpan</a>
@@ -90,11 +111,13 @@ $(document).ready(function(){
 		var oid          = $("#oid").val();
 		var crud         = $("#crud").val();
 		var f_name       = $("#f_name").val();
+		var f_product	 = $("#f_product").val();
 
 		var data_sender = {
-			'oid'   : oid,
-			'crud'  : crud,
-			'f_name': f_name
+			'oid'   	: oid,
+			'crud'  	: crud,
+			'f_name'	: f_name,
+			'f_product' : f_product
 		}
 
 		if (crud == 'insert') {
@@ -157,7 +180,8 @@ function edit(id){
 				$("#formdata > div > div > div.box-header > h3").html("Ubah Data");		
 				$("#crud").val('update');
 				$("#oid").val(obj.data[0]['id']);
-				$("#f_name").val(obj.data[0]['name']);				
+				$("#f_name").val(obj.data[0]['name']);
+				$("#f_product").val(obj.data[0]['id_product']);								
 				$("#loadprosess").modal('hide');				
 			}
 			else

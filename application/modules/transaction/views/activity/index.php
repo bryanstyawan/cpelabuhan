@@ -118,7 +118,70 @@
 					<input type="hidden" id="activity_oid" value="<?=$vessel_jetty[0]->id;?>">
 					<input type="hidden" id="activity_oid_vessel_activity">					
 					<input type="hidden" id="activity_crud">					
-        
+
+                    <h3 class="col-lg-12">Activity</h3>                    
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Activity</label>
+							<select class="form-control" id="f_activity">
+								<option value=""> - - - - - </option>
+								<?php
+									if ($activity != array()) {
+										# code...
+										for ($i=0; $i < count($activity); $i++) { 
+											# code...
+								?>
+											<option value="<?=$activity[$i]['id'];?>"><?=$activity[$i]['name'];?></option>
+								<?php
+										}
+									}
+								?>
+							</select>
+						</div>
+					</div>
+                    
+					<div class="col-md-6">
+						<div class="form-group">
+                            <label>Nominasi (KL)</label>
+                            <input class="form-control" type="text" id="f_nominasi" placeholder="Nominasi (KL)">
+						</div>
+                    </div>
+                    
+                                    
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Destination</label>
+                            <input class="form-control" type="text" id="f_destination" placeholder="Destination">
+						</div>
+                    </div>                    
+                    
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Rate Aggrement (KL/HOUR)</label>
+                            <input class="form-control" type="text" id="f_rate" placeholder="Rate Aggrement (KL/HOUR)">
+						</div>
+					</div>      
+
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Stop By</label>
+							<select class="form-control" id="f_stop_by">
+								<option value="">- - - Choose - - -</option>
+								<?php
+									if ($stop_by != array()) {
+										# code...
+										for ($i=0; $i < count($stop_by); $i++) { 
+											# code...
+								?>
+											<option value="<?=$stop_by[$i]['id'];?>"><?=$stop_by[$i]['name'];?></option>
+								<?php
+										}
+									}
+								?>
+							</select>
+						</div>
+                    </div>					
+					
                     <h3 class="col-lg-12">Route</h3>
 					<div class="col-md-6">
 						<div class="form-group">
@@ -142,82 +205,26 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Pump Number</label>
-							<select class="form-control" id="f_pump_number">
-							</select>
+							<label>Product</label>
+							<input class="form-control" id="f_product" disabled="disabled">
 						</div>
 					</div>					
-
+					
 					<div class="col-md-6">
 						<div class="form-group">
 							<label>Pipeline</label>
 							<select class="form-control" id="f_pipeline">
 							</select>
 						</div>
-					</div>                    
-                    
-                    <h3 class="col-lg-12">Activity</h3>                    
-					<div class="col-md-6">
-						<div class="form-group">
-							<label>Activity</label>
-							<select class="form-control" id="f_activity">
-								<option value=""> - - - - - </option>
-								<?php
-									if ($activity != array()) {
-										# code...
-										for ($i=0; $i < count($activity); $i++) { 
-											# code...
-								?>
-											<option value="<?=$activity[$i]['id'];?>"><?=$activity[$i]['name'];?></option>
-								<?php
-										}
-									}
-								?>
-							</select>
-						</div>
-					</div>
+					</div>					
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Product</label>
-							<select class="form-control" id="f_product">
-								<option value=""> - - - - - </option>								
-								<?php
-									if ($product != array()) {
-										# code...
-										for ($i=0; $i < count($product); $i++) { 
-											# code...
-								?>
-											<option value="<?=$product[$i]['id'];?>"><?=$product[$i]['name'];?></option>
-								<?php
-										}
-									}
-								?>								
+							<label>Pump Number</label>
+							<select class="form-control" id="f_pump_number">
 							</select>
 						</div>
-                    </div>
-                    
-					<div class="col-md-6">
-						<div class="form-group">
-                            <label>Nominasi (KL)</label>
-                            <input class="form-control" type="text" id="f_nominasi" placeholder="Nominasi (KL)">
-						</div>
-                    </div>
-                    
-                                    
-					<div class="col-md-6">
-						<div class="form-group">
-							<label>Destination</label>
-                            <input class="form-control" type="text" id="f_destination" placeholder="Destination">
-						</div>
-                    </div>                    
-                    
-					<div class="col-md-6">
-						<div class="form-group">
-							<label>Rate Aggrement (KL/HOUR)</label>
-                            <input class="form-control" type="text" id="f_rate" placeholder="Rate Aggrement (KL/HOUR)">
-						</div>
-					</div>                    
+					</div>					                                 
 
 				</div>
 
@@ -245,7 +252,7 @@ $(document).ready(function(){
 	{
 		$(".form-control").val('');
 		$("#activity_formdata").css({"display": ""})
-		$("#activity_viewdata").css({"display": "none"})
+		// $("#activity_viewdata").css({"display": "none"})
 		$("#activity_formdata > div > div.box-header > h3").html("Add Data");		
 		$("#activity_crud").val('insert');
 	})
@@ -253,40 +260,62 @@ $(document).ready(function(){
 	$("#f_tank_number").change(function() {
 		var val_data = $(this).val();		
 		$.ajax({
-			url  : "<?php echo site_url();?>master/pipeline/get_pump_number",
+			url  : "<?php echo site_url();?>master/pipeline/get_product_tank",
 			type : "post",
 			data : "val_data="+val_data,
 			beforeSend:function(){
 				$("#loadprosess").modal('show');
-				$("#f_pump_number").html('');				
+				$("#f_product").html('');				
 			},
 			success:function(msg){
-				$("#f_pump_number").html(msg);
-				setTimeout(function(){
+				var obj = jQuery.parseJSON (msg);
+				if (obj.status == 1)
+				{
+					$("#f_product").val(obj.data[0]['name_product']);
+					$("#loadprosess").modal('hide');				
+				}
+				else 
+				{
 					$("#loadprosess").modal('hide');
-				}, 500);
+				}	
 			}
 		})		
-	})
-
-	$("#f_pump_number").change(function() {
-		var id_tank_number = $("#f_tank_number").val();
-		var id_pump_number = $(this).val();        		
-		var data_sender = {
-			'id_tank_number' : id_tank_number,
-			'id_pump_number' : id_pump_number
-		}
 
 		$.ajax({
 			url  : "<?php echo site_url();?>master/pipeline/get_pipeline",
 			type : "post",
-            data:{data_sender : data_sender},
+			data : "val_data="+val_data,
 			beforeSend:function(){
 				$("#loadprosess").modal('show');
 				$("#f_pipeline").html('');				
 			},
 			success:function(msg){
 				$("#f_pipeline").html(msg);
+				setTimeout(function(){
+					$("#loadprosess").modal('hide');
+				}, 500);
+			}
+		})				
+	})
+
+	$("#f_pipeline").change(function() {
+		var id_tank_number = $("#f_tank_number").val();
+		var id_pipeline = $(this).val();        		
+		var data_sender = {
+			'id_tank_number' : id_tank_number,
+			'id_pipeline' : id_pipeline
+		}
+
+		$.ajax({
+			url  : "<?php echo site_url();?>master/pump_number/get_pump_number",
+			type : "post",
+            data:{data_sender : data_sender},
+			beforeSend:function(){
+				$("#loadprosess").modal('show');
+				$("#f_pump_number").html('');				
+			},
+			success:function(msg){
+				$("#f_pump_number").html(msg);
 				setTimeout(function(){
 					$("#loadprosess").modal('hide');
 				}, 500);
@@ -300,23 +329,28 @@ $(document).ready(function(){
 		var oid               = $("#activity_oid").val();
 		var oid_activity	  = $("#activity_oid_vessel_activity").val();
 		var crud              = $("#activity_crud").val();
+		var f_id_tank_number      = $("#f_tank_number").val();		
 		var f_id_pipeline     = $("#f_pipeline").val();		
+		var f_id_pump_number = $("#f_pump_number").val();
+
 		var f_id_activity     = $("#f_activity").val();
-		var f_id_product      = $("#f_product").val();
 		var f_nominasi        = $("#f_nominasi").val();
 		var f_destination     = $("#f_destination").val(); 				
 		var f_rate            = $("#f_rate").val();
+
 
 		var data_sender = {
 			'oid'   			: oid,
 			'oid_activity'		: oid_activity,
 			'crud'  			: crud,
+			'f_id_tank_number'		: f_id_tank_number,
 			'f_id_pipeline' 	: f_id_pipeline,
+			'f_id_pump_number'  : f_id_pump_number,
 			'f_id_activity' 	: f_id_activity,
-			'f_id_product'		: f_id_product,
 			'f_nominasi'		: f_nominasi,
 			'f_destination'		: f_destination,			
-			'f_rate'			: f_rate
+			'f_rate'			: f_rate,
+			'status_stop'		: $("#f_stop_by").val()			
 		}
 
 		if (crud == 'insert') {
@@ -327,25 +361,77 @@ $(document).ready(function(){
 			flag_allowed = 1;
 		}
 
-		if (flag_allowed == 1) {
-			$.ajax({
-				url :"<?php echo site_url();?>transaction/store_activity",
-				type:"post",
-				data:{data_sender : data_sender},
-				beforeSend:function(){
-					$("#editData").modal('hide');
-					$("#loadprosess").modal('show');
-				},
-				success:function(msg){
-					var obj = jQuery.parseJSON (msg);
-					ajax_status(obj);
-				},
-				error:function(jqXHR,exception)
+		$.ajax({
+			url :"<?php echo site_url();?>transaction/check_activity",
+			type:"post",
+			data:{data_sender : data_sender},
+			beforeSend:function(){
+				$("#editData").modal('hide');
+				$("#loadprosess").modal('show');
+			},
+			success:function(msg){
+				var obj = jQuery.parseJSON (msg);
+				if (obj.status == 1)
 				{
-					ajax_catch(jqXHR,exception);					
+					$("#loadprosess").modal('hide');        
+					Lobibox.confirm({
+						title   : "Konfirmasi",
+						msg     : obj.text,
+						callback: function ($this, type) {
+							if (type === 'yes'){			
+								if (flag_allowed == 1) 
+								{
+									$.ajax({
+										url :"<?php echo site_url();?>transaction/store_activity",
+										type:"post",
+										data:{data_sender : data_sender},
+										beforeSend:function(){
+											$("#editData").modal('hide');
+											$("#loadprosess").modal('show');
+										},
+										success:function(msg){
+											var obj = jQuery.parseJSON (msg);
+											ajax_status(obj);
+										},
+										error:function(jqXHR,exception)
+										{
+											ajax_catch(jqXHR,exception);					
+										}
+									})					
+								}
+							}
+						}
+					})					
 				}
-			})					
-		}
+				else
+				{
+					if (flag_allowed == 1) 
+					{
+						$.ajax({
+							url :"<?php echo site_url();?>transaction/store_activity",
+							type:"post",
+							data:{data_sender : data_sender},
+							beforeSend:function(){
+								$("#editData").modal('hide');
+								$("#loadprosess").modal('show');
+							},
+							success:function(msg){
+								var obj = jQuery.parseJSON (msg);
+								ajax_status(obj);
+							},
+							error:function(jqXHR,exception)
+							{
+								ajax_catch(jqXHR,exception);					
+							}
+						})					
+					}					
+				}
+			},
+			error:function(jqXHR,exception)
+			{
+				ajax_catch(jqXHR,exception);					
+			}
+		})
 	})	
 });
 
@@ -361,7 +447,7 @@ function activity_edit(id){
 			if (obj.status == 1)
 			{
 				$("#activity_formdata").css({"display": ""})
-				$("#activity_viewdata").css({"display": "none"})
+				// $("#activity_viewdata").css({"display": "none"})
 				$("#activity_formdata > div > div.box-header > h3").html("Edit Data");		
 				$("#activity_crud").val('update');
 				$("#activity_oid_vessel_activity").val(obj.data[0]['id']);
@@ -474,7 +560,7 @@ function activity_proses(id,oid) {
 		},
 		success:function(msg){
 			$("#activity_proses_viewdata").css({"display": ""})
-			$("#activity_viewdata").css({"display": "none"})
+			// $("#activity_viewdata").css({"display": "none"})
 			$("#activity_proses_viewdata").html(msg);			
 			$("#loadprosess").modal('hide');						
 		},

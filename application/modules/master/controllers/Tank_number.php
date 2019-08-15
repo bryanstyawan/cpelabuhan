@@ -5,7 +5,7 @@ class Tank_number extends CI_Controller {
 
 	public function __construct () {
 		parent::__construct();
-		// $this->load->model ('Mbank_data', '', TRUE);
+		$this->load->model ('Mmaster', '', TRUE);
 	}
 	
 	public function index()
@@ -13,7 +13,8 @@ class Tank_number extends CI_Controller {
 		$this->Globalrules->session_rule();						
 		$data['title']   = 'Tank Number';
 		$data['content'] = 'master/tank_number/index';
-		$data['list']    = $this->Allcrud->listData('mr_tank_number')->result_array();
+		$data['product'] = $this->Allcrud->listData('mr_product')->result_array();		
+		$data['list']    = $this->Mmaster->get_tank_number();
 		$this->load->view('templateAdmin',$data);
 	}
 
@@ -37,11 +38,13 @@ class Tank_number extends CI_Controller {
 		if ($data_sender['crud'] == 'insert') {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
+			$data_store['id_product']	   = $data_sender['f_product'];			
 			            $res_data          = $this->Allcrud->addData('mr_tank_number',$data_store);
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data tank number berhasil ditambah.');						
 		} elseif ($data_sender['crud'] == 'update') {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
+			$data_store['id_product']	   = $data_sender['f_product'];			
 			            $res_data          = $this->Allcrud->editData('mr_tank_number',$data_store,array('id'=>$data_sender['oid']));
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data tank number berhasil diupdate.');			
 		} elseif ($data_sender['crud'] == 'delete') {

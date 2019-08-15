@@ -5,7 +5,7 @@ class Pump_number extends CI_Controller {
 
 	public function __construct () {
 		parent::__construct();
-		// $this->load->model ('Mbank_data', '', TRUE);
+		$this->load->model ('Mmaster', '', TRUE);
 	}
 	
 	public function index()
@@ -14,8 +14,17 @@ class Pump_number extends CI_Controller {
 		$data['title']       = 'Pump Number';
 		$data['content']     = 'master/pump_number/index';
 		$data['tank_number'] = $this->Allcrud->listData('mr_tank_number')->result_array();		
-		$data['list']        = $this->Globalrules->get_pump_number();	
+		$data['list']        = $this->Mmaster->get_pump_number();	
 		$this->load->view('templateAdmin',$data);
+	}
+
+	public function get_pump_number()
+	{
+		# code...
+		$this->Globalrules->session_rule();								
+		$data_sender = $this->input->post('data_sender');
+		$data['list'] = $this->Allcrud->getData('mr_pump_number',array('id_tank_number'=>$data_sender['id_tank_number'],'id_pipeline'=>$data_sender['id_pipeline']));
+		$this->load->view('master/pipeline/combo_pump_number',$data);		
 	}
 
 	public function store($arg=NULL,$oid=NULL)
@@ -38,12 +47,14 @@ class Pump_number extends CI_Controller {
 		if ($data_sender['crud'] == 'insert') {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
+			$data_store['id_pipeline']     = $data_sender['f_pipeline'];
 			$data_store['id_tank_number']  = $data_sender['f_id_tank_number'];			
 			            $res_data          = $this->Allcrud->addData('mr_pump_number',$data_store);
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data tank number berhasil ditambah.');						
 		} elseif ($data_sender['crud'] == 'update') {
 			# code...
 			$data_store['name']            = $data_sender['f_name'];
+			$data_store['id_pipeline']     = $data_sender['f_pipeline'];			
 			$data_store['id_tank_number']  = $data_sender['f_id_tank_number'];			
 			            $res_data          = $this->Allcrud->editData('mr_pump_number',$data_store,array('id'=>$data_sender['oid']));
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data tank number berhasil diupdate.');			

@@ -3,15 +3,15 @@
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title"></h3>
-				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Tambah Data</button></div>
+				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div><!-- /.box-header -->
 			<div class="box-body" id="table_fill">
 				<table class="table table-bordered table-striped table-view">
 					<thead>
 				<tr>
 					<th>No</th>
+					<th>Product</th>					
 					<th>Tank Number</th>
-					<th>Pump Number</th>
 					<th>Pipeline</th>					
 					<th>action</th>
 				</tr>
@@ -25,8 +25,8 @@
 					?>
 						<tr>
 							<td><?php echo $i+1;?></td>
-							<td><?php echo $list[$i]->name_tank_number;?></td>
-							<td><?php echo $list[$i]->name_pump_number;?></td>														
+							<td><?php echo $list[$i]->name_product;?></td>							
+							<td><?php echo $list[$i]->name_tank_number;?></td>														
 							<td><?php echo $list[$i]->name;?></td>
 							<td>
 								<button class="btn btn-primary btn-xs" onclick="edit('<?php echo $list[$i]->id;?>')"><i class="fa fa-edit"></i> Ubah</button>&nbsp;&nbsp;
@@ -61,7 +61,7 @@
 						<div class="form-group">
 							<label>Tank Number</label>
 							<select class="form-control" id="f_tank_number">
-								<option value=""> - - - - - </option>
+								<option value="0"> - - - - - </option>
 								<?php
 									if ($tank_number != array()) {
 										# code...
@@ -79,23 +79,22 @@
 
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Pump Number</label>
-							<select class="form-control" id="f_pump_number">
-							</select>
+							<label>Product</label>
+							<input class="form-control" id="f_product" disabled="disabled">
 						</div>
 					</div>					
 
 					<div class="col-md-6">
 						<div class="form-group">
 							<label>Pipeline</label>
-							<input type="text" class="form-control" id="f_name" placeholder="Nama">
+							<input type="text" class="form-control" id="f_name" placeholder="Pipeline">
 						</div>
 					</div>
 				</div>
 
 			</div><!-- /.box-body -->
 			<div class="box-footer">
-				<a class="btn btn-success pull-right" id="btn-trigger-controll"><i class="fa fa-save"></i>&nbsp; Simpan</a>
+				<a class="btn btn-success pull-right" id="btn-trigger-controll"><i class="fa fa-save"></i>&nbsp; Save</a>
 			</div>
 		</div><!-- /.box -->
 	</div>
@@ -107,7 +106,7 @@ $(document).ready(function(){
 		$(".form-control").val('');
 		$("#formdata").css({"display": ""})
 		$("#viewdata").css({"display": "none"})
-		$("#formdata > div > div > div.box-header > h3").html("Tambah Data");		
+		$("#formdata > div > div > div.box-header > h3").html("Add Data");		
 		$("#crud").val('insert');
 		$("#section_file").css({"display": "none"})				
 	})
@@ -119,19 +118,26 @@ $(document).ready(function(){
 
 	$("#f_tank_number").change(function() {
 		var val_data = $(this).val();		
+		$("#f_product").val('');						
 		$.ajax({
-			url  : "<?php echo site_url();?>master/pipeline/get_pump_number",
+			url  : "<?php echo site_url();?>master/pipeline/get_product_tank",
 			type : "post",
 			data : "val_data="+val_data,
 			beforeSend:function(){
 				$("#loadprosess").modal('show');
-				$("#f_pump_number").html('');				
+				$("#f_product").html('');				
 			},
 			success:function(msg){
-				$("#f_pump_number").html(msg);
-				setTimeout(function(){
+				var obj = jQuery.parseJSON (msg);
+				if (obj.status == 1)
+				{
+					$("#f_product").val(obj.data[0]['name_product']);
+					$("#loadprosess").modal('hide');				
+				}
+				else 
+				{
 					$("#loadprosess").modal('hide');
-				}, 500);
+				}	
 			}
 		})		
 	})
@@ -142,14 +148,12 @@ $(document).ready(function(){
 		var oid              = $("#oid").val();
 		var crud             = $("#crud").val();
 		var f_id_tank_number = $("#f_tank_number").val();		
-		var f_id_pump_number = $("#f_pump_number").val();
 		var f_name           = $("#f_name").val();
 
 		var data_sender = {
 			'oid'   			: oid,
 			'crud'  			: crud,
 			'f_id_tank_number' 	: f_id_tank_number,
-			'f_id_pump_number' 	: f_id_pump_number,			
 			'f_name'			: f_name
 		}
 
