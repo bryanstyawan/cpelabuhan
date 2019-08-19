@@ -89,6 +89,22 @@
     font-weight: bold;
     top: 115px;    
 }
+
+/* Mobile Styles */
+@media only screen and (max-width: 400px) {
+    .content
+    {
+        margin-top: 145px;
+    }
+}
+
+/* Tablet Styles */
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+}
 </style>
 <script type="text/javascript">
 /*********************************************************************************************/
@@ -158,10 +174,10 @@ $(document).ready(function()
     });
 
     $('.timerangewithtime').datetimepicker({
-        // maxDate: new Date,
-        // format: 'dd-mm-yyyy',
-        // todayHighlight: true,
-        // daysOfWeekHighlighted: "0,6"
+        maxDate: new Date,
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        daysOfWeekHighlighted: "0,6"
     });    
 
     $(".timerange").inputmask("yyyy-mm-dd", {"placeholder": "yyyy-mm-dd"});
@@ -200,7 +216,7 @@ $(document).click(function(e) {
             <?php menu_header();?>
         </header>
 
-        <aside class="content-mobile main-sidebar hidden-sm hidden-xs">
+        <aside class="content-mobile main-sidebar" style="padding-top: 259px;">
             <section class="sidebar" style="height: auto;">
                 <ul class="sidebar-menu tree" data-widget="tree">
                     <?php menuSamping();?>
@@ -499,8 +515,8 @@ function ajax_catch(jqXHR,exception) {
                     "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
                     "<'row'<'col-sm-12'tr>>" +
                     "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            "bSort": false
-
+            "bSort": false,
+            responsive: true
             // "dom": '<"top"f>rt'
             // "dom": '<"top"fl>rt<"bottom"ip><"clear">'
         });

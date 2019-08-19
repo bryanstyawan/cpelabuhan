@@ -242,9 +242,8 @@ class Transaction extends CI_Controller {
 			$text_status                        = $this->Globalrules->check_status_res($res_data,'Data berhasil ditambah.');						
 		} elseif ($data_sender['crud'] == 'update') {
 			# code...
-			$data_store['id_jetty']  = $data_sender['f_id_jetty'];									
-			$data_store['id_vessel']  = $data_sender['f_id_vessel'];
-			            $res_data          = $this->Allcrud->editData('tr_vessel_jetty',$data_store,array('id'=>$data_sender['oid']));
+			$data_store['process_datetime']     =  $data_sender['process_time'];;
+			            $res_data          = $this->Allcrud->editData('tr_activity_process',$data_store,array('id'=>$data_sender['oid']));
 			            $text_status       = $this->Globalrules->check_status_res($res_data,'Data berhasil diupdate.');			
 		} elseif ($data_sender['crud'] == 'delete') {
 			# code...

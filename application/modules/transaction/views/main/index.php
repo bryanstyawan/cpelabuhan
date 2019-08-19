@@ -9,7 +9,7 @@
 				<h3 class="box-title"></h3>
 				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div><!-- /.box-header -->
-			<div class="box-body" id="table_fill">
+			<div class="box-body table-responsive" id="table_fill">
 				<table class="table table-bordered table-striped table-view" id="main_table">
 					<thead>
 				<tr>

@@ -65,7 +65,7 @@
 				?>
 			</h3>			
 		</div>
-		<div class="box-body">
+		<div class="box-body table-responsive">
 			<table class="table table-bordered table-striped table-view">
 				<thead>
 					<tr>
@@ -108,7 +108,7 @@
 										if ($the_last == 1) {
 											# code...
 									?>
-											<button class="btn btn-warning btn-xs col-lg-12" style="margin:5px;"><i class="fa fa-edit"></i> Edit</button>									
+											<button class="btn btn-warning btn-xs col-lg-12" style="margin:5px;" onclick="edit('<?php echo $activity_process[$i]->id;?>')"><i class="fa fa-edit"></i> Edit</button>									
 									<?php
 											if ($activity_process[$i]->process_status == 'start') {
 												# code...
@@ -209,12 +209,136 @@
     </div>
 </div>
 
+<div class="example-modal">
+    <div class="modal modal-success fade" id="time_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="box-content">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Time Process</h4>
+                    </div>
+					<div class="modal-body" style="background-color: #fff!important;">
+						<label style="color: #000;font-weight: 400;font-size: 19px;">Time</label>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-star"></i></span>
+								<input class="form-control timerangewithtime" id="f_datetimerange">
+								<input type="hidden" id="f_id_process">								
+							</div>
+						</div>
+                    </div>
+                    <div class="modal-footer" style="background-color: #fff!important;border-top-color: #d2d6de;">
+						<a href="#" class="btn btn-danger" data-dismiss="modal">Exit</a>
+						<a href="#" class="btn btn-success" id="btn_edit_process">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+	var id_edit = 0;
+function edit(id) {
+	id_edit = id;
+	$.ajax({
+		url :"<?php echo site_url();?>transaction/get_data/"+id+"/ajax/tr_activity_process",
+		type:"post",
+		beforeSend:function(){
+			$("#loadprosess").modal('show');
+		},
+		success:function(msg){
+			var obj = jQuery.parseJSON (msg);
+			if (obj.status == 1)
+			{
+				console.log(obj.data[0].process_datetime)
+				// $(".form-control").val('');
+				// $("#formdata").css({"display": ""})
+				// $("#section_file").css({"display": ""})										
+				// $("#viewdata").css({"display": "none"})
+				// $("#formdata > div > div > div.box-header > h3").html("Edit Data");		
+				// $("#crud").val('update');
+				// $("#oid").val(obj.data[0]['id']);
+				// $("#f_jetty").val(obj.data[0]['id_jetty']);
+				// $("#f_vessel").val(obj.data[0]['id_vessel']);								
+				$("#time_modal").modal('show');
+				$("#loadprosess").modal('hide');				
+			}
+			else
+			{
+				Lobibox.notify('warning',{msg: obj.text});
+				setTimeout(function(){
+					$("#loadprosess").modal('hide');
+				}, 500);
+			}						
+		},
+		error:function(jqXHR,exception)
+		{
+			ajax_catch(jqXHR,exception);					
+		}
+	})	
+}
 $(document).ready(function(){
 	$(".closeData_activity").click(function(){
 		$("#activity_proses_viewdata").css({"display": "none"})
 		$("#activity_viewdata").css({"display": ""})
 	})	
+
+	$("#btn_edit_process").click(function() {
+		var f_id_process = $("#f_id_process").val();
+		var f_datetimerange = $("#f_datetimerange").val();
+		var data_sender = {
+			'oid'   			: id_edit,
+			'crud'  			: 'update',
+			'process_time'		: f_datetimerange
+		}
+
+		Lobibox.confirm({
+			title   : "Confirmation",
+			msg     : "Edit data ?",
+			callback: function ($this, type) {
+				if (type === 'yes'){			
+					$.ajax({
+						url :"<?php echo site_url();?>transaction/process_activity_store/",
+						type:"post",
+						data:{data_sender : data_sender},					
+						beforeSend:function(){
+							$("#editData").modal('hide');
+							$("#loadprosess").modal('show');
+						},
+						success:function(msg){
+							var obj = jQuery.parseJSON (msg);
+							ajax_status(obj);
+						},
+						error:function(jqXHR,exception)
+						{
+							ajax_catch(jqXHR,exception);					
+						}
+					})
+				}
+			}
+		})			
+	})
+
+    $('.timerange').datepicker({
+        maxDate: new Date,
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        daysOfWeekHighlighted: "0,6"
+    });
+
+    $('.timerangewithtime').datetimepicker({
+
+    });    	
+
+    // $(".timerangewithtime").inputmask("datetime",{
+	// 	mask: "1-2-y h:s", 
+	// 	placeholder: "dd-mm-yyyy hh:mm", 
+	// 	leapday: "-02-29", 
+	// 	separator: "-", 
+	// 	alias: "dd-mm-yyyy"
+	// });	
 
 	$(".stop_process").click(function() 
 	{

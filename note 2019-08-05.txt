@@ -7,7 +7,7 @@
 [done] 4. tank ada status peringant bahwa tank sudah dipakai (tapi masih bisa di bypass)
 [done] 5. warna disesuaikan dengan pertamina dan tambah logo
 [done] 6. Goban / Pertamina Goban
-7. edit waktu di proses
-8. filter di main transaction
-9. dashboard activity terakhir disetiap jetty
+[done] 7. edit waktu di proses
+[done] 8. filter di main transaction
+[done] 9. dashboard activity terakhir disetiap jetty
 [done] 10. buat 1 halaman di activity

@@ -82,30 +82,30 @@
 	}
 
 
-		function menuSamping(){
-			$CI =& get_instance();
-			$role = $CI->session->userdata('_session_role');
-			$induk = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=0 AND flag=1 AND id_role=$role AND baca=1");
-			foreach($induk->result() as $row){
-	
-				$y = $CI->db->query(" SELECT COUNT(config_menu_akses.id_menu) as jml FROM config_menu INNER JOIN config_menu_akses WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1")->row();
-				$x = $y->jml;
-				if ($x !=0){?>
-					<li class="treeview"><?php echo anchor("#","<i class='".$row->icon."'></i><span>". $row->nama_menu."</span><i class='fa fa-angle-left pull-right'></i>");?>
-					<ul class="treeview-menu">
-				<?php $anak = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1");
-					foreach($anak->result() as $baris){?>
-						<li><?php echo anchor($baris->url_pages,"<i class='".$baris->icon."'></i><span>".$baris->nama_menu."</span>");?></li>
-					<?php
-					}
-					echo "</ul></li>";
-				}else{?>
-					<li><?php echo anchor($row->url_pages,"<i class='".$row->icon."'></i><span>".$row->nama_menu."</span>");?></li>
+	function menuSamping(){
+		$CI =& get_instance();
+		$role = $CI->session->userdata('_session_role');
+		$induk = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=0 AND flag=1 AND id_role=$role AND baca=1");
+		foreach($induk->result() as $row){
+
+			$y = $CI->db->query(" SELECT COUNT(config_menu_akses.id_menu) as jml FROM config_menu INNER JOIN config_menu_akses WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1")->row();
+			$x = $y->jml;
+			if ($x !=0){?>
+				<li class="treeview"><?php echo anchor("#","<i class='".$row->icon."'></i><span>". $row->nama_menu."</span><i class='fa fa-angle-left pull-right'></i>");?>
+				<ul class="treeview-menu">
+			<?php $anak = $CI->db->query(" SELECT config_menu.*, config_menu_akses.id_akses FROM config_menu INNER JOIN config_menu_akses ON config_menu.id_menu=config_menu_akses.id_menu WHERE id_parent=$row->id_menu AND flag=1 AND id_role=$role AND baca=1");
+				foreach($anak->result() as $baris){?>
+					<li><?php echo anchor($baris->url_pages,"<i class='".$baris->icon."'></i><span>".$baris->nama_menu."</span>");?></li>
 				<?php
 				}
+				echo "</ul></li>";
+			}else{?>
+				<li><?php echo anchor($row->url_pages,"<i class='".$row->icon."'></i><span>".$row->nama_menu."</span>");?></li>
+			<?php
 			}
-	
-		}		
+		}
+
+	}		
 
 
 		function load_paket_rangking($tipe)

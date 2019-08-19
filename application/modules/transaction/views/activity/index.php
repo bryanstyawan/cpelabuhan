@@ -5,7 +5,7 @@
 				<h3 class="box-title">Jetty & Vessel</h3>
 				<div class="box-tools pull-right"><button class="btn btn-block btn-success closeData"><i class="fa fa-arrow-circle-o-left"></i> Main Transaction</button></div>				
 			</div>
-			<div class="box-body">
+			<div class="box-body table-responsive">
 				<table class="table table-bordered table-striped table-view">
 					<thead>
                         <tr>
@@ -44,7 +44,7 @@
 				<h3 class="box-title">Activity</h3>
 				<div class="box-tools pull-right"><button class="btn btn-block btn-primary" id="addData"><i class="fa fa-plus-square"></i> Add Data</button></div>
 			</div>
-			<div class="box-body">
+			<div class="box-body table-responsive">
 				<table class="table table-bordered table-striped table-view">
 					<thead>
                         <tr>

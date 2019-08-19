@@ -1,4 +1,15 @@
 v1.0.0    
+2019-08-19 
+==========
+New:
+- Edit Time Process
+Improved:
+- Mobile Navigasi
+- datetimepicker
+Fixed:
+Canceled:
+
+v1.0.0    
 2019-08-15 
 ==========
 New:
