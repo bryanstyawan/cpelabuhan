@@ -211,6 +211,8 @@ class Transaction extends CI_Controller {
 		$data['activity_process'] = $this->Mtransaction->activity_process($id);
 		$data['stop_by']          = $this->Allcrud->listData('mr_status_stop')->result_array();		
 		$data['product']          = $this->Allcrud->listData('mr_product')->result_array();				
+		$data['x_id'] = $id;
+		$data['x_oid'] = $oid;
 		$this->load->view('transaction/activity_proses/index',$data);		
 	}	
 

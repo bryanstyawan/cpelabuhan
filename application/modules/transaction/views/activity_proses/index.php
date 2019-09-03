@@ -2,6 +2,8 @@
 	<div class="box">
 		<div class="box-header">
 			<h3 class="box-title col-xs-6">
+				<input type="hidden" value="<?=$x_id;?>" id="x_id">
+				<input type="hidden" value="<?=$x_oid;?>" id="x_oid">				
 				<div class="box-tools pull-left"><button class="btn btn-block btn-success closeData_activity"><i class="fa fa-arrow-circle-o-left"></i> Back To Activity</button></div>													
 			</h3>
 			<h3 class="box-title col-xs-6 pull-right">Activity</h3>
@@ -280,6 +282,8 @@ function edit(id) {
 	})	
 }
 $(document).ready(function(){
+	x_id  = $("#x_id").val()
+	x_oid  = $("#x_oid").val()
 	$(".closeData_activity").click(function(){
 		$("#activity_proses_viewdata").css({"display": "none"})
 		$("#activity_viewdata").css({"display": ""})
@@ -294,6 +298,7 @@ $(document).ready(function(){
 			'process_time'		: f_datetimerange
 		}
 
+		$("#time_modal").modal('hide');
 		Lobibox.confirm({
 			title   : "Confirmation",
 			msg     : "Edit data ?",
@@ -309,7 +314,9 @@ $(document).ready(function(){
 						},
 						success:function(msg){
 							var obj = jQuery.parseJSON (msg);
-							ajax_status(obj);
+							ajax_status(obj,'no-refresh');
+							$("#activity_proses_viewdata").html('');
+							activity_proses(x_id,x_oid)
 						},
 						error:function(jqXHR,exception)
 						{
@@ -372,7 +379,9 @@ $(document).ready(function(){
 						},
 						success:function(msg){
 							var obj = jQuery.parseJSON (msg);
-							ajax_status(obj);
+							ajax_status(obj,'no-refresh');
+							$("#activity_proses_viewdata").html('');
+							activity_proses(x_id,x_oid)
 						},
 						error:function(jqXHR,exception)
 						{
@@ -395,6 +404,7 @@ $(document).ready(function(){
 			'remarks'			: $("#f_remarks").val()
 		}
 
+		$("#remarks_modal").modal('hide');
 		Lobibox.confirm({
 			title   : "Confirmation",
 			msg     : "Start this process ?",
@@ -405,12 +415,13 @@ $(document).ready(function(){
 						type:"post",
 						data:{data_sender : data_sender},					
 						beforeSend:function(){
-							$("#editData").modal('hide');
 							$("#loadprosess").modal('show');
 						},
 						success:function(msg){
 							var obj = jQuery.parseJSON (msg);
-							ajax_status(obj);
+							ajax_status(obj,'no-refresh');
+							$("#activity_proses_viewdata").html('');
+							activity_proses(x_id,x_oid)
 						},
 						error:function(jqXHR,exception)
 						{

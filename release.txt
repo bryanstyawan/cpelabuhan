@@ -1,4 +1,14 @@
 v1.0.0    
+2019-09-03 
+==========
+New:
+Improved:
+- Ajax Status
+- Single page in transaction
+Fixed:
+Canceled:
+
+v1.0.0    
 2019-08-19 
 ==========
 New:

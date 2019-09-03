@@ -391,7 +391,9 @@ $(document).ready(function(){
 										},
 										success:function(msg){
 											var obj = jQuery.parseJSON (msg);
-											ajax_status(obj);
+											ajax_status(obj,'no-refresh');
+											$("#activitydata").html('');																						
+											activity(oid);																					
 										},
 										error:function(jqXHR,exception)
 										{

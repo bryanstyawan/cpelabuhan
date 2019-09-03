@@ -33,7 +33,8 @@ class Mtransaction extends CI_Model {
 				LEFT JOIN mr_jetty b ON a.id_jetty = b.id
 				LEFT JOIN mr_vessel c ON a.id_vessel = c.id
 				LEFT JOIN mr_activity d ON a.last_activity = d.id				
-				".$sql_helper."";
+				".$sql_helper."
+				ORDER BY a.audit_time_insert DESC";
 				// print_r($sql);die();
 		$query = $this->db->query($sql);
 		if($query->num_rows() > 0)
