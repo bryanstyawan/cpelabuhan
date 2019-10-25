@@ -12,10 +12,11 @@ class Mdashboard extends CI_Model
 	{
 		# code...
 		$sql = "SELECT 	a.id,
+						a.id as id_vessel_jetty,		
 						b.name as name_jetty,
 						c.name as name_vessel,
 						IFNULL(d.name,'none') as last_activity,
-						a.date
+						a.date						
 				FROM tr_vessel_jetty a
 				LEFT JOIN mr_jetty b ON a.id_jetty = b.id
 				LEFT JOIN mr_vessel c ON a.id_vessel = c.id
@@ -34,6 +35,27 @@ class Mdashboard extends CI_Model
 		}								
 	}		
 
+	public function get_vessel_activity($id)
+	{
+		# code...
+		$sql = "SELECT a.rate,
+						b.name as name_tank
+				FROM tr_vessel_activity a
+				LEFT JOIN mr_tank_number b on a.id_tank_number = b.id								
+				WHERE a.id_vessel_jetty = '".$id."'
+				ORDER BY a.audit_time_insert DESC
+				LIMIT 1";
+				// print_r($sql);
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0)
+		{
+			return $query->result();
+		}
+		else
+		{
+			return 0;
+		}										
+	}
 
 	public function get_chat_user($param,$id=NULL,$id2=NULL)
 	{
