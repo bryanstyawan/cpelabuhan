@@ -11,7 +11,7 @@ class Dashboard extends CI_Controller {
 	public function home()
 	{
 		$this->Globalrules->session_rule();
-		$data['title']             = '';
+		$data['title']             = 'Dashboard';
 		$data['user_chat']         = 0;		
 		$data['jetty']       = $this->Allcrud->listData('mr_jetty')->result_array();		
 		// $data['jetty']             = $this->mdashboard->get_chat_user('all');
