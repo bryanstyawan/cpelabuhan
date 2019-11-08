@@ -57,38 +57,40 @@ class Mdashboard extends CI_Model
 		}										
 	}
 
-	public function get_chat_user($param,$id=NULL,$id2=NULL)
+	public function get_vessel_activity_all($id=NULL,$id_secondary=NULL,$order=NULL)
 	{
 		# code...
-		$sql = "";
-		if ($param == 'all') {
+		$sql_helper = "";
+		if ($id_secondary!=NULL) {
 			# code...
-			$sql = "";
+			$sql_helper = "AND a.id = ".$id_secondary."";
 		}
-		else {
-			# code...
-			$and = "";
-			$and2 = "";			
-			if ($id != NULL)$and = "AND a.id_user_sender = ".$id."";
-			if ($id2 != NULL)$and2 = "AND a.id_materi = ".$id2."";			
-			$sql = "WHERE a.status_read = 0 AND a.id_admin_sender = 0 ".$and." ".$and2."";
-		}
-
-		$sql = "SELECT DISTINCT b.name,
-								COUNT(a.id_user_sender) as counter,
-								a.id_user_sender,
-								a.id_materi
-				FROM tr_chat a
-				LEFT JOIN mr_user b
-				ON a.id_user_sender = b.id
---				LEFT JOIN mr_video c
---				ON a.id_materi = c.id_materi
---				LEFT JOIN mr_materi d
---				ON c.id_materi = d.id				
-				".$sql."
-				GROUP BY a.id_materi, a.id_user_sender, b.name
-		";
-		// print_r($sql);die();		
+		$sql = "SELECT 	a.id,
+						b.name as name_activity,
+						c.name as name_product,
+						a.nominasi,
+						d.name as name_pipeline,
+						d1.name as name_tank_number,
+						d2.name as name_pump_number,
+						a.destination,
+						a.rate,
+						e1.username as name_audit_insert,
+						a.audit_time_insert,
+						e2.username as name_audit_update,
+						a.audit_time_update,
+						a.id_activity,
+						a.id_vessel_jetty
+						FROM tr_vessel_activity a
+						LEFT JOIN mr_activity b ON a.id_activity = b.id
+						LEFT JOIN mr_pipeline d ON a.id_pipeline = d.id
+						LEFT JOIN mr_tank_number d1 ON a.id_tank_number = d1.id
+						LEFT JOIN mr_pump_number d2 ON a.id_pump_number = d2.id
+						LEFT JOIN mr_product c ON d1.id_product = c.id
+						LEFT JOIN mr_user e1 ON a.audit_user_insert = e1.id
+						LEFT JOIN mr_user e2 ON a.audit_user_update = e2.id																
+				WHERE a.id_vessel_jetty = '".$id."'
+				".$sql_helper."
+				ORDER BY a.audit_time_insert ".$order."";
 		$query = $this->db->query($sql);
 		if($query->num_rows() > 0)
 		{
@@ -97,24 +99,7 @@ class Mdashboard extends CI_Model
 		else
 		{
 			return 0;
-		}								
-	}
-
-	public function get_data_notify_user($param,$id_pegawai)
-	{
-		# code...
-		$sql = "SELECT a.*
-				FROM log_notifikasi a
-				WHERE a.receiver = '".$id_pegawai."'
-				AND a.status_log = '".$param."'";
-		$query = $this->db->query($sql);
-		if($query->num_rows() > 0)
-		{
-			return $query->result();
 		}
-		else
-		{
-			return 0;
-		}								
-	}
+	}	
+
 }

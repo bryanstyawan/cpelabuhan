@@ -1,4 +1,13 @@
 v1.0.0    
+2019-11-08 
+==========
+New:
+Improved:
+- Dashboard
+Fixed:
+Canceled:
+
+v1.0.0    
 2019-09-03 
 ==========
 New:
